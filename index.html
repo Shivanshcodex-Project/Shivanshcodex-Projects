@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ShivanshCodex | Login</title>
+  <link rel="stylesheet" href="./assets/style.css" />
+</head>
+
+<body>
+  <div class="auth-shell">
+    <div class="auth-card">
+      <div class="brand">
+        <div class="logo">SC</div>
+        <div>
+          <h1>ShivanshCodex</h1>
+          <p>Login to access Project’s</p>
+        </div>
+      </div>
+
+      <div class="tabs">
+        <button id="tabLogin" class="tab active" type="button">Login</button>
+        <button id="tabRegister" class="tab" type="button">Register</button>
+      </div>
+
+      <div id="msg" class="msg" aria-live="polite"></div>
+
+      <!-- LOGIN -->
+      <form id="loginForm" class="form">
+        <label class="field">
+          <span>Username</span>
+          <input id="loginUsername" type="text" placeholder="e.g. shivanshcodex" autocomplete="username" required />
+        </label>
+
+        <label class="field">
+          <span>Password</span>
+          <input id="loginPassword" type="password" placeholder="••••••••" autocomplete="current-password" required />
+        </label>
+
+        <button class="btn" type="submit">Login</button>
+        <p class="hint">New here? Switch to <b>Register</b>.</p>
+      </form>
+
+      <!-- REGISTER -->
+      <form id="registerForm" class="form hidden">
+        <label class="field">
+          <span>Username</span>
+          <input id="regUsername" type="text" placeholder="unique username" autocomplete="username" required />
+        </label>
+
+        <label class="field">
+          <span>Password</span>
+          <input id="regPassword" type="password" placeholder="min 6 characters" autocomplete="new-password" required />
+        </label>
+
+        <button class="btn" type="submit">Create Account</button>
+        <p class="hint">Already have account? Switch to <b>Login</b>.</p>
+      </form>
+
+      <div class="footer">
+        <span>Made with ❤️ by</span> <a href="#" onclick="return false;">ShivanshCodex</a>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="./assets/auth.js"></script>
+</body>
+</html>
