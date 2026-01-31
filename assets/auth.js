@@ -7,7 +7,6 @@ import {
   updateProfile
 } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
 
-// ✅ YOUR FIREBASE CONFIG (same as you sent)
 const firebaseConfig = {
   apiKey: "AIzaSyBzW-TNlRRvWiRZHvrWgu1ZdSXUtOXn2nI",
   authDomain: "shivanshcodex-project.firebaseapp.com",
@@ -20,7 +19,6 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
-// -------- UI --------
 const tabLogin = document.getElementById("tabLogin");
 const tabRegister = document.getElementById("tabRegister");
 const loginForm = document.getElementById("loginForm");
@@ -41,16 +39,16 @@ function normalizeUsername(u) {
   return (u || "")
     .trim()
     .toLowerCase()
-    .replace(/\s+/g, "")        // remove spaces
-    .replace(/[^a-z0-9._-]/g, ""); // safe chars
+    .replace(/\s+/g, "")
+    .replace(/[^a-z0-9._-]/g, "");
 }
 
 function usernameToEmail(username) {
-  // ✅ Firebase needs email internally, but user sees only username
+  // user ko email dikhana nahi, but firebase ko email chahiye
   return `${username}@shivansh.local`;
 }
 
-// Tabs
+// Toggle tabs
 tabLogin.addEventListener("click", () => {
   tabLogin.classList.add("active");
   tabRegister.classList.remove("active");
@@ -69,12 +67,12 @@ tabRegister.addEventListener("click", () => {
   regUsername.focus();
 });
 
-// If already logged in => dashboard
+// If logged in -> dashboard
 onAuthStateChanged(auth, (user) => {
   if (user) window.location.href = "./dashboard.html";
 });
 
-// Login
+// Login submit
 loginForm.addEventListener("submit", async (e) => {
   e.preventDefault();
   setMsg("");
@@ -97,7 +95,7 @@ loginForm.addEventListener("submit", async (e) => {
   }
 });
 
-// Register
+// Register submit
 registerForm.addEventListener("submit", async (e) => {
   e.preventDefault();
   setMsg("");
@@ -113,8 +111,6 @@ registerForm.addEventListener("submit", async (e) => {
   try {
     setMsg("Creating account…");
     const cred = await createUserWithEmailAndPassword(auth, email, p);
-
-    // ✅ Save displayName (so dashboard can show username)
     await updateProfile(cred.user, { displayName: u });
 
     setMsg("Account created ✅", "ok");
