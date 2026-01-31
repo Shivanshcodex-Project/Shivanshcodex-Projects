@@ -1,11 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
-import {
-  getAuth,
-  onAuthStateChanged,
-  signOut
-} from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
 
-// ✅ same config
 const firebaseConfig = {
   apiKey: "AIzaSyBzW-TNlRRvWiRZHvrWgu1ZdSXUtOXn2nI",
   authDomain: "shivanshcodex-project.firebaseapp.com",
@@ -26,6 +21,15 @@ const search = document.getElementById("search");
 const count = document.getElementById("count");
 
 let allProjects = [];
+
+function escapeHtml(str){
+  return String(str || "")
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
+}
 
 function render(list){
   grid.innerHTML = "";
@@ -58,15 +62,6 @@ function render(list){
   });
 }
 
-function escapeHtml(str){
-  return String(str || "")
-    .replaceAll("&","&amp;")
-    .replaceAll("<","&lt;")
-    .replaceAll(">","&gt;")
-    .replaceAll('"',"&quot;")
-    .replaceAll("'","&#039;");
-}
-
 async function loadProjects(){
   const res = await fetch("./projects.json", { cache: "no-store" });
   const data = await res.json();
@@ -89,7 +84,7 @@ onAuthStateChanged(auth, async (user) => {
   } catch (e) {
     render([]);
     empty.classList.remove("hidden");
-    empty.innerHTML = `<h3>projects.json load nahi hua</h3><p>Check file name/path + Vercel deploy.</p>`;
+    empty.innerHTML = `<h3>projects.json load nahi hua</h3><p>Check file name/path + deploy.</p>`;
   }
 });
 
@@ -98,7 +93,6 @@ logoutBtn.addEventListener("click", async () => {
   window.location.href = "./index.html";
 });
 
-// Search filter
 search.addEventListener("input", () => {
   const q = (search.value || "").trim().toLowerCase();
   if (!q) return render(allProjects);
