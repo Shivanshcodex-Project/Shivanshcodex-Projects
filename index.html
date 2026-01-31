@@ -11,7 +11,9 @@
   <div class="auth-shell">
     <div class="auth-card">
       <div class="brand">
-        <div class="logo">SC</div>
+        <div class="logo">
+          <img src="./assets/logo.png" alt="ShivanshCodex Logo">
+        </div>
         <div>
           <h1>ShivanshCodex</h1>
           <p>Login to access Project’s</p>
@@ -26,7 +28,7 @@
       <div id="msg" class="msg" aria-live="polite"></div>
 
       <!-- LOGIN -->
-      <form id="loginForm" class="form">
+      <form id="loginForm" class="form" autocomplete="on">
         <label class="field">
           <span>Username</span>
           <input id="loginUsername" type="text" placeholder="e.g. shivanshcodex" autocomplete="username" required />
@@ -42,7 +44,7 @@
       </form>
 
       <!-- REGISTER -->
-      <form id="registerForm" class="form hidden">
+      <form id="registerForm" class="form hidden" autocomplete="on">
         <label class="field">
           <span>Username</span>
           <input id="regUsername" type="text" placeholder="unique username" autocomplete="username" required />
