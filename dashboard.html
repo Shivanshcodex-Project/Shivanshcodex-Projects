@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ShivanshCodex | Project’s</title>
+  <link rel="stylesheet" href="./assets/style.css" />
+</head>
+
+<body>
+  <div class="dash-shell">
+    <header class="dash-header">
+      <div class="dash-left">
+        <div class="logo sm">SC</div>
+        <div>
+          <h2>ShivanshCodex Project’s</h2>
+          <p id="userLine" class="sub">Loading user…</p>
+        </div>
+      </div>
+
+      <div class="dash-right">
+        <button id="logoutBtn" class="btn ghost" type="button">Logout</button>
+      </div>
+    </header>
+
+    <main class="dash-main">
+      <div class="topbar">
+        <input id="search" class="search" type="search" placeholder="Search project…" />
+        <span id="count" class="count">0</span>
+      </div>
+
+      <section id="grid" class="grid"></section>
+
+      <div id="empty" class="empty hidden">
+        <h3>No projects found</h3>
+        <p>`projects.json` me projects add karo.</p>
+      </div>
+    </main>
+
+    <footer class="dash-footer">
+      <span>Projects load from</span> <code>projects.json</code>
+    </footer>
+  </div>
+
+  <script type="module" src="./assets/dashboard.js"></script>
+</body>
+</html>
