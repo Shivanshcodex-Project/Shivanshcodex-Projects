@@ -1,38 +1,50 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Project 11 | Advanced Hand Gesture Particle System</title>
-  <link rel="stylesheet" href="./style.css" />
-
-  <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>3D Hand-Gesture Particle System</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+
   <canvas id="three"></canvas>
+
+  <!-- hidden video (camera feed) -->
+  <video id="video" playsinline muted autoplay></video>
 
   <div class="ui">
     <div class="topRow">
-      <div class="badge">SC • Advanced</div>
-      <div id="tplPill" class="pill">Template: Heart</div>
+      <div class="chip">SC • Advanced</div>
+      <div class="chip chipRight" id="tplPill">Template: Heart</div>
     </div>
 
     <h1>3D Hand-Gesture<br/>Particle System</h1>
-    <p class="sub" id="hint">
-      ✋ open = expand • ✊ fist = contract • ☝️ one finger = next • ✌️ two fingers = burst • 🤏 pinch = color
-    </p>
 
-    <div class="row">
-      <button id="startBtn" type="button">Enable Camera</button>
-      <button id="stopBtn" class="ghost" type="button" disabled>Stop</button>
-      <button id="nextBtn" class="ghost" type="button">Next Template</button>
+    <div class="hint">
+      ✋ open = expand • ✊ fist = contract • ☝️ one finger = next • ✌️ two fingers = burst • 🤏 pinch = color
     </div>
 
-    <div id="status" class="status">Status: Ready</div>
+    <div class="btnRow">
+      <button id="startBtn" class="btn primary">Enable Camera</button>
+      <button id="stopBtn" class="btn" disabled>Stop</button>
+      <button id="nextBtn" class="btn">Next Template</button>
+    </div>
+
+    <div class="status" id="status">Status: Ready</div>
+
+    <div class="fine">
+      Tip: Best results = bright light + hand center + 30–50cm distance.
+    </div>
   </div>
 
-  <video id="video" playsinline muted></video>
-  <script src="./app.js"></script>
+  <!-- Three.js -->
+  <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+
+  <!-- MediaPipe Hands -->
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.min.js"></script>
+
+  <script src="app.js"></script>
 </body>
 </html>
