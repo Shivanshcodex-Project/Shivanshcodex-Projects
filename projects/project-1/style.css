@@ -30,7 +30,10 @@ html,body{
 a{ color:var(--a); text-decoration:none; }
 a:active{ opacity:.85; }
 :focus{ outline:none; }
-:focus-visible{ box-shadow: 0 0 0 4px rgba(0,212,255,.18); border-color: rgba(0,212,255,.55); }
+:focus-visible{
+  box-shadow: 0 0 0 4px rgba(0,212,255,.18);
+  border-color: rgba(0,212,255,.55);
+}
 
 .top{ max-width:1200px; margin:0 auto; padding:16px 16px 0; }
 .back{ display:inline-block; margin-bottom:10px; font-weight:900; }
@@ -56,7 +59,7 @@ a:active{ opacity:.85; }
 .brand h1{ margin:0; font-size:18px; }
 .sub{ margin:4px 0 0; color:var(--muted); font-size:12px; }
 
-.actions{ display:flex; gap:10px; margin-top:12px; }
+.actions{ display:flex; gap:10px; margin-top:12px; flex-wrap:wrap; }
 
 .btn{
   height:44px; padding:0 14px;
@@ -67,6 +70,8 @@ a:active{ opacity:.85; }
   font-weight:1000;
   cursor:pointer;
   transition:.18s ease;
+  position:relative;
+  z-index:2; /* ✅ keep above layers */
 }
 .btn:hover{ transform: translateY(-1px); }
 .btn:active{ transform: translateY(0px); }
@@ -92,6 +97,7 @@ a:active{ opacity:.85; }
   overflow:hidden;
 }
 
+/* ✅ IMPORTANT FIX: overlay should not block clicks */
 .card::before{
   content:"";
   position:absolute;
@@ -101,6 +107,7 @@ a:active{ opacity:.85; }
     radial-gradient(circle at 80% 30%, rgba(107,91,255,.18), transparent 45%);
   opacity:0;
   transition:.18s ease;
+  pointer-events:none; /* ✅ NOW BUTTONS CLICKABLE */
 }
 .card:hover::before{ opacity:1; }
 
@@ -112,6 +119,8 @@ a:active{ opacity:.85; }
   align-items:center;
   gap:10px;
   margin-bottom:10px;
+  position:relative;
+  z-index:2;
 }
 .cardHead h2{ margin:0; font-size:15px; letter-spacing:.2px; }
 
@@ -132,6 +141,8 @@ a:active{ opacity:.85; }
   grid-template-columns: 160px 1fr;
   gap:10px 12px;
   font-size:12px;
+  position:relative;
+  z-index:2;
 }
 .k{ color:rgba(234,240,255,.70); }
 .v{ color:rgba(234,240,255,.92); word-break:break-word; }
@@ -141,6 +152,8 @@ a:active{ opacity:.85; }
   gap:10px;
   margin-top:12px;
   flex-wrap:wrap;
+  position:relative;
+  z-index:2;
 }
 
 .note{
@@ -148,6 +161,8 @@ a:active{ opacity:.85; }
   color:rgba(234,240,255,.65);
   font-size:11px;
   line-height:1.45;
+  position:relative;
+  z-index:2;
 }
 
 .mini{
@@ -157,6 +172,8 @@ a:active{ opacity:.85; }
   border-radius:16px;
   color:rgba(234,240,255,.78);
   font-size:12px;
+  position:relative;
+  z-index:2;
 }
 
 /* ✅ MAP */
@@ -167,6 +184,7 @@ a:active{ opacity:.85; }
   border:1px solid rgba(255,255,255,.10);
   background: rgba(0,0,0,.18);
   height: 360px;
+  z-index:2;
 }
 .mapWrap iframe{
   width:100%;
@@ -184,6 +202,7 @@ a:active{ opacity:.85; }
   color: rgba(234,240,255,.85);
   font-size:12px;
   backdrop-filter: blur(10px);
+  pointer-events:none; /* ✅ don't block taps */
 }
 
 .toast{
