@@ -19,6 +19,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
+// -------- UI --------
 const tabLogin = document.getElementById("tabLogin");
 const tabRegister = document.getElementById("tabRegister");
 const loginForm = document.getElementById("loginForm");
@@ -29,6 +30,9 @@ const loginUsername = document.getElementById("loginUsername");
 const loginPassword = document.getElementById("loginPassword");
 const regUsername = document.getElementById("regUsername");
 const regPassword = document.getElementById("regPassword");
+
+const hintToRegister = document.getElementById("hintToRegister");
+const hintToLogin = document.getElementById("hintToLogin");
 
 function setMsg(text, type = "") {
   msg.className = "msg " + (type || "");
@@ -44,27 +48,40 @@ function normalizeUsername(u) {
 }
 
 function usernameToEmail(username) {
-  // user ko email dikhana nahi, but firebase ko email chahiye
   return `${username}@shivansh.local`;
 }
 
-// Toggle tabs
-tabLogin.addEventListener("click", () => {
+// ✅ open screens
+function openLogin(){
   tabLogin.classList.add("active");
   tabRegister.classList.remove("active");
   loginForm.classList.remove("hidden");
   registerForm.classList.add("hidden");
   setMsg("");
   loginUsername.focus();
-});
+}
 
-tabRegister.addEventListener("click", () => {
+function openRegister(){
   tabRegister.classList.add("active");
   tabLogin.classList.remove("active");
   registerForm.classList.remove("hidden");
   loginForm.classList.add("hidden");
   setMsg("");
   regUsername.focus();
+}
+
+// Tabs
+tabLogin.addEventListener("click", openLogin);
+tabRegister.addEventListener("click", openRegister);
+
+// Hint links
+hintToRegister?.addEventListener("click", (e) => {
+  e.preventDefault();
+  openRegister();
+});
+hintToLogin?.addEventListener("click", (e) => {
+  e.preventDefault();
+  openLogin();
 });
 
 // If logged in -> dashboard
@@ -72,7 +89,7 @@ onAuthStateChanged(auth, (user) => {
   if (user) window.location.href = "./dashboard.html";
 });
 
-// Login submit
+// Login
 loginForm.addEventListener("submit", async (e) => {
   e.preventDefault();
   setMsg("");
@@ -95,7 +112,7 @@ loginForm.addEventListener("submit", async (e) => {
   }
 });
 
-// Register submit
+// Register
 registerForm.addEventListener("submit", async (e) => {
   e.preventDefault();
   setMsg("");
