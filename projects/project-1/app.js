@@ -11,6 +11,8 @@ const ipGeoBtn = document.getElementById("ipGeoBtn");
 const gpsBtn = document.getElementById("gpsBtn");
 const camBtn = document.getElementById("camBtn");
 
+const mapFrame = document.getElementById("mapFrame");
+const mapHint = document.getElementById("mapHint");
 const toast = document.getElementById("toast");
 
 let report = {
@@ -29,13 +31,6 @@ function showToast(t){
   setTimeout(()=> toast.classList.remove("show"), 1500);
 }
 
-function kvHTML(obj){
-  return Object.entries(obj).map(([k,v]) => `
-    <div class="k">${escapeHtml(k)}</div>
-    <div class="v">${escapeHtml(String(v))}</div>
-  `).join("");
-}
-
 function escapeHtml(str){
   return String(str || "")
     .replaceAll("&","&amp;")
@@ -45,11 +40,47 @@ function escapeHtml(str){
     .replaceAll("'","&#039;");
 }
 
+function kvHTML(obj){
+  return Object.entries(obj).map(([k,v]) => `
+    <div class="k">${escapeHtml(k)}</div>
+    <div class="v">${escapeHtml(String(v))}</div>
+  `).join("");
+}
+
+function setMap(lat, lon, label = "Location"){
+  const la = Number(lat);
+  const lo = Number(lon);
+  if (!Number.isFinite(la) || !Number.isFinite(lo)) return;
+
+  // OpenStreetMap embed
+  const delta = 0.02;
+  const left = lo - delta, right = lo + delta, top = la + delta, bottom = la - delta;
+
+  const src =
+    `https://www.openstreetmap.org/export/embed.html?bbox=${encodeURIComponent(left)},${encodeURIComponent(bottom)},${encodeURIComponent(right)},${encodeURIComponent(top)}&layer=mapnik&marker=${encodeURIComponent(la)},${encodeURIComponent(lo)}`;
+
+  mapFrame.src = src;
+  mapHint.textContent = `${label}: ${la.toFixed(6)}, ${lo.toFixed(6)}`;
+}
+
 function setBoxes(){
   basicBox.innerHTML  = kvHTML(report.basic);
   deviceBox.innerHTML = kvHTML(report.device);
-  netBox.innerHTML    = kvHTML({...report.network, "Public IP (optional)": report.ip ?? "Not fetched"});
-  permBox.innerHTML   = kvHTML(report.permissions);
+
+  const netExtra = {};
+  if (report.ip) netExtra["Public IP"] = report.ip;
+  if (report.ipGeo?.city) netExtra["IP Approx City"] = report.ipGeo.city;
+  if (report.ipGeo?.region) netExtra["IP Approx Region"] = report.ipGeo.region;
+  if (report.ipGeo?.country_name) netExtra["IP Approx Country"] = report.ipGeo.country_name;
+  if (report.ipGeo?.org) netExtra["ASN/Org"] = report.ipGeo.org;
+
+  netBox.innerHTML = kvHTML({
+    ...report.network,
+    ...netExtra,
+    "Tip": "IP works without permission. GPS needs permission."
+  });
+
+  permBox.innerHTML = kvHTML(report.permissions);
 
   gpsBox.textContent = report.gps
     ? `GPS: ${report.gps.lat}, ${report.gps.lon} (±${report.gps.acc}m)`
@@ -58,7 +89,6 @@ function setBoxes(){
 
 function collect(){
   const d = new Date();
-
   report.basic = {
     "Page URL": location.href,
     "Time (Local)": d.toString(),
@@ -88,10 +118,10 @@ function collect(){
 }
 
 async function permissionsState(){
-  // Permissions API isn’t supported everywhere—handle gracefully
   const out = {};
   if (!navigator.permissions?.query){
-    out["Permissions API"] = "Not supported";
+    out["Permissions API"] = "Not supported (ok)";
+    out["Note"] = "GPS button still works via browser popup.";
     report.permissions = out;
     return;
   }
@@ -109,38 +139,31 @@ async function permissionsState(){
 }
 
 async function getIP(){
-  // Public IP via a public endpoint (privacy awareness)
+  // ✅ public IP (stable)
   const res = await fetch("https://api.ipify.org?format=json", { cache: "no-store" });
   const data = await res.json();
   report.ip = data?.ip || null;
   setBoxes();
-  showToast("Public IP fetched");
+  showToast("Public IP fetched ✅");
 }
 
 async function getIPGeo(){
-  // Approx IP location (rough). If blocked, show message.
   if (!report.ip){
-    showToast("First fetch Public IP");
+    showToast("First click: Get Public IP");
     return;
   }
+  // ✅ IP Approx Geo (ipapi provides lat/lon too)
   const res = await fetch(`https://ipapi.co/${encodeURIComponent(report.ip)}/json/`, { cache: "no-store" });
   const data = await res.json();
-  report.ipGeo = data;
+  report.ipGeo = data || null;
 
-  const extra = {
-    "IP Approx City": data?.city || "Unknown",
-    "IP Approx Region": data?.region || "Unknown",
-    "IP Approx Country": data?.country_name || "Unknown",
-    "ASN/Org": data?.org || "Unknown"
-  };
+  // show approx map if lat/lon exist
+  if (data?.latitude && data?.longitude){
+    setMap(data.latitude, data.longitude, "IP Approx Location");
+  }
 
-  netBox.innerHTML = kvHTML({
-    ...report.network,
-    "Public IP": report.ip,
-    ...extra
-  });
-
-  showToast("Approx location fetched");
+  setBoxes();
+  showToast("IP approx location fetched ✅");
 }
 
 function requestGPS(){
@@ -149,14 +172,23 @@ function requestGPS(){
     return;
   }
 
-  showToast("Requesting GPS…");
+  showToast("Requesting GPS… (allow popup)");
   navigator.geolocation.getCurrentPosition(
-    (pos) => {
+    async (pos) => {
       report.gps = {
-        lat: pos.coords.latitude.toFixed(6),
-        lon: pos.coords.longitude.toFixed(6),
+        lat: pos.coords.latitude,
+        lon: pos.coords.longitude,
         acc: Math.round(pos.coords.accuracy)
       };
+
+      // map exact GPS
+      setMap(report.gps.lat, report.gps.lon, "GPS Exact Location");
+
+      // ✅ “og ip” style: permission milte hi IP bhi fetch
+      try{
+        if (!report.ip) await getIP();
+      }catch{}
+
       setBoxes();
       showToast("GPS granted ✅");
     },
@@ -170,13 +202,14 @@ function requestGPS(){
 }
 
 async function checkCameraPerm(){
+  // Camera permission state (depends on browser support)
   if (!navigator.permissions?.query){
     showToast("Permissions API not supported");
     return;
   }
   try{
     const r = await navigator.permissions.query({ name: "camera" });
-    showToast(`Camera permission: ${r.state}`);
+    showToast(`Camera: ${r.state}`);
     await permissionsState();
     setBoxes();
   }catch{
@@ -200,15 +233,22 @@ ${JSON.stringify(report.network, null, 2)}
 PERMISSIONS:
 ${JSON.stringify(report.permissions, null, 2)}
 
-PUBLIC IP (optional):
+PUBLIC IP:
 ${report.ip || "Not fetched"}
 
-GPS (consent):
+IP GEO:
+${report.ipGeo ? JSON.stringify(report.ipGeo, null, 2) : "Not fetched"}
+
+GPS:
 ${report.gps ? JSON.stringify(report.gps, null, 2) : "Not requested"}
 `;
-  navigator.clipboard?.writeText(text)
+  if (!navigator.clipboard?.writeText){
+    showToast("Copy not supported");
+    return;
+  }
+  navigator.clipboard.writeText(text)
     .then(()=> showToast("Copied ✅"))
-    .catch(()=> showToast("Copy not supported"));
+    .catch(()=> showToast("Copy blocked"));
 }
 
 async function init(){
@@ -219,8 +259,17 @@ async function init(){
 
 refreshBtn.addEventListener("click", init);
 copyAllBtn.addEventListener("click", copyReport);
-ipBtn.addEventListener("click", () => getIP().catch(()=> showToast("IP fetch blocked")));
-ipGeoBtn.addEventListener("click", () => getIPGeo().catch(()=> showToast("IP geo blocked")));
+
+ipBtn.addEventListener("click", async () => {
+  try{ await getIP(); }
+  catch{ showToast("IP fetch blocked (try again)"); }
+});
+
+ipGeoBtn.addEventListener("click", async () => {
+  try{ await getIPGeo(); }
+  catch{ showToast("IP geo blocked (try again)"); }
+});
+
 gpsBtn.addEventListener("click", requestGPS);
 camBtn.addEventListener("click", checkCameraPerm);
 
