@@ -4,7 +4,6 @@ const startBtn = document.getElementById("startBtn");
 const stopBtn = document.getElementById("stopBtn");
 const statusEl = document.getElementById("status");
 
-// ---------- helpers ----------
 function setStatus(msg){
   statusEl.textContent = "Status: " + msg;
 }
@@ -12,7 +11,6 @@ function clamp(v,min,max){ return Math.max(min, Math.min(max, v)); }
 
 // ---------- THREE ----------
 const scene = new THREE.Scene();
-
 const camera3D = new THREE.PerspectiveCamera(60, innerWidth/innerHeight, 0.1, 1000);
 camera3D.position.z = 6;
 
@@ -31,24 +29,26 @@ for (let i=0;i<COUNT;i++){
 }
 geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
 
-const material = new THREE.PointsMaterial({
-  size: 0.04,
-  color: 0x00d4ff
-});
-
+const material = new THREE.PointsMaterial({ size:0.04, color:0x00d4ff });
 const points = new THREE.Points(geometry, material);
 scene.add(points);
 
 let spread = 1;
 let targetRotX = 0, targetRotY = 0;
 
-// ---------- MediaPipe Hands ----------
+// ---------- MediaPipe ----------
 let hands = null;
 let running = false;
 let rafId = null;
 let stream = null;
 
 function setupHands(){
+  // ✅ if Hands lib not loaded, show error
+  if (typeof Hands === "undefined"){
+    setStatus("MediaPipe Hands not loaded (CDN blocked). Try different network.");
+    return false;
+  }
+
   hands = new Hands({
     locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`
   });
@@ -61,35 +61,33 @@ function setupHands(){
   });
 
   hands.onResults(onHandResults);
+  return true;
 }
 
 function onHandResults(results){
-  if (!results || !results.multiHandLandmarks || !results.multiHandLandmarks.length){
-    // no hand → slowly relax back
+  if (!results?.multiHandLandmarks?.length){
     spread = clamp(spread * 0.995, 0.7, 3);
     material.color.set(0x00d4ff);
+    points.scale.set(spread, spread, spread);
     return;
   }
 
   const hand = results.multiHandLandmarks[0];
-
-  // palm center near point 9
   const palm = hand[9];
+
   targetRotY = (palm.x - 0.5) * 2.2;
   targetRotX = (palm.y - 0.5) * 2.2;
 
-  // simple open vs fist: thumb tip (4) and index tip (8)
   const thumb = hand[4];
   const index = hand[8];
-
   const dist = Math.hypot(thumb.x - index.x, thumb.y - index.y);
 
   if (dist > 0.10){
     spread = clamp(spread + 0.05, 0.7, 3);
-    material.color.set(0xff4dd2); // pink
+    material.color.set(0xff4dd2);
   } else {
     spread = clamp(spread - 0.05, 0.7, 3);
-    material.color.set(0x00d4ff); // cyan
+    material.color.set(0x00d4ff);
   }
 
   points.scale.set(spread, spread, spread);
@@ -97,26 +95,28 @@ function onHandResults(results){
 
 async function loop(){
   if (!running) return;
-
-  // send current frame to MediaPipe
   try{
     await hands.send({ image: video });
   }catch(e){
     setStatus("Hands error: " + (e?.message || e));
   }
-
   rafId = requestAnimationFrame(loop);
 }
 
 // ---------- Camera ----------
 async function startCamera(){
+  // ✅ click reached proof
+  setStatus("Clicked ✅ Starting…");
+
   if (!navigator.mediaDevices?.getUserMedia){
-    setStatus("getUserMedia not supported in this browser");
+    setStatus("getUserMedia not supported");
     return;
   }
 
-  // IMPORTANT: create hands once
-  if (!hands) setupHands();
+  if (!hands){
+    const ok = setupHands();
+    if (!ok) return;
+  }
 
   try{
     setStatus("Requesting camera permission…");
@@ -132,11 +132,11 @@ async function startCamera(){
     startBtn.disabled = true;
     stopBtn.disabled = false;
 
-    setStatus("Camera ON ✅ Showing hand tracking…");
-
+    setStatus("Camera ON ✅ Hand tracking running…");
     loop();
+
   }catch(err){
-    setStatus("Camera blocked/denied: " + (err?.name || "") + " " + (err?.message || ""));
+    setStatus("Camera denied/blocked: " + (err?.name || "") + " " + (err?.message || ""));
   }
 }
 
@@ -157,20 +157,15 @@ function stopCamera(){
   setStatus("Camera OFF");
 }
 
-// ---------- UI events ----------
 startBtn.addEventListener("click", startCamera);
 stopBtn.addEventListener("click", stopCamera);
 
-// ---------- Render loop ----------
+// ---------- render loop ----------
 function animate(){
   requestAnimationFrame(animate);
-
-  // smooth rotation
   points.rotation.y += (targetRotY - points.rotation.y) * 0.08;
   points.rotation.x += (targetRotX - points.rotation.x) * 0.08;
-
   points.rotation.z += 0.0015;
-
   renderer.render(scene, camera3D);
 }
 animate();
