@@ -9,7 +9,7 @@
   <!-- Three.js -->
   <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
 
-  <!-- MediaPipe Hands (stable CDN paths) -->
+  <!-- MediaPipe Hands -->
   <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
 </head>
 <body>
@@ -20,18 +20,17 @@
     <p class="sub">Open palm = expand • Fist = contract • Move hand = control</p>
 
     <div class="row">
-      <button id="startBtn">Enable Camera</button>
-      <button id="stopBtn" class="ghost" disabled>Stop</button>
+      <button id="startBtn" type="button">Enable Camera</button>
+      <button id="stopBtn" class="ghost" type="button" disabled>Stop</button>
     </div>
 
     <div id="status" class="status">Status: Ready</div>
     <div class="tips">
-      <div>✅ Works on HTTPS (Vercel)</div>
-      <div>⚠️ If camera blocked: Chrome → Site settings → Camera → Allow</div>
+      <div>✅ Tip: First time click pe camera popup aana chahiye</div>
+      <div>⚠️ If blocked: Chrome → Site settings → Camera → Allow</div>
     </div>
   </div>
 
-  <!-- Hidden video (source for MediaPipe) -->
   <video id="video" playsinline muted></video>
 
   <script src="./app.js"></script>
