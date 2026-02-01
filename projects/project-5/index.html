@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>3D Hand Gesture Particle System</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link rel="stylesheet" href="./style.css">
+
+  <!-- Three.js -->
+  <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+
+  <!-- MediaPipe Hands -->
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
+</head>
+
+<body>
+  <div class="ui">
+    <h1>3D Hand-Gesture Particle System</h1>
+    <p>Open palm = expand | Fist = contract | Move hand = control particles</p>
+    <button id="startBtn">Enable Camera</button>
+  </div>
+
+  <video id="video" autoplay muted playsinline></video>
+  <canvas id="three"></canvas>
+
+  <script src="./app.js"></script>
+</body>
+</html>
