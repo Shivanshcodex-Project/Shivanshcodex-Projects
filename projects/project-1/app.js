@@ -52,7 +52,6 @@ function setMap(lat, lon, label = "Location"){
   const lo = Number(lon);
   if (!Number.isFinite(la) || !Number.isFinite(lo)) return;
 
-  // OpenStreetMap embed
   const delta = 0.02;
   const left = lo - delta, right = lo + delta, top = la + delta, bottom = la - delta;
 
@@ -69,6 +68,7 @@ function setBoxes(){
 
   const netExtra = {};
   if (report.ip) netExtra["Public IP"] = report.ip;
+
   if (report.ipGeo?.city) netExtra["IP Approx City"] = report.ipGeo.city;
   if (report.ipGeo?.region) netExtra["IP Approx Region"] = report.ipGeo.region;
   if (report.ipGeo?.country_name) netExtra["IP Approx Country"] = report.ipGeo.country_name;
@@ -83,7 +83,7 @@ function setBoxes(){
   permBox.innerHTML = kvHTML(report.permissions);
 
   gpsBox.textContent = report.gps
-    ? `GPS: ${report.gps.lat}, ${report.gps.lon} (±${report.gps.acc}m)`
+    ? `GPS: ${Number(report.gps.lat).toFixed(6)}, ${Number(report.gps.lon).toFixed(6)} (±${report.gps.acc}m)`
     : "GPS not requested.";
 }
 
@@ -121,7 +121,7 @@ async function permissionsState(){
   const out = {};
   if (!navigator.permissions?.query){
     out["Permissions API"] = "Not supported (ok)";
-    out["Note"] = "GPS button still works via browser popup.";
+    out["Note"] = "GPS still works using the browser popup.";
     report.permissions = out;
     return;
   }
@@ -130,7 +130,7 @@ async function permissionsState(){
   for (const name of names){
     try{
       const res = await navigator.permissions.query({ name });
-      out[name] = res.state; // granted / denied / prompt
+      out[name] = res.state;
     }catch{
       out[name] = "Not supported";
     }
@@ -139,7 +139,6 @@ async function permissionsState(){
 }
 
 async function getIP(){
-  // ✅ public IP (stable)
   const res = await fetch("https://api.ipify.org?format=json", { cache: "no-store" });
   const data = await res.json();
   report.ip = data?.ip || null;
@@ -152,12 +151,11 @@ async function getIPGeo(){
     showToast("First click: Get Public IP");
     return;
   }
-  // ✅ IP Approx Geo (ipapi provides lat/lon too)
+
   const res = await fetch(`https://ipapi.co/${encodeURIComponent(report.ip)}/json/`, { cache: "no-store" });
   const data = await res.json();
   report.ipGeo = data || null;
 
-  // show approx map if lat/lon exist
   if (data?.latitude && data?.longitude){
     setMap(data.latitude, data.longitude, "IP Approx Location");
   }
@@ -181,10 +179,9 @@ function requestGPS(){
         acc: Math.round(pos.coords.accuracy)
       };
 
-      // map exact GPS
       setMap(report.gps.lat, report.gps.lon, "GPS Exact Location");
 
-      // ✅ “og ip” style: permission milte hi IP bhi fetch
+      // permission milte hi IP bhi auto fetch (agar nahi hai)
       try{
         if (!report.ip) await getIP();
       }catch{}
@@ -202,7 +199,6 @@ function requestGPS(){
 }
 
 async function checkCameraPerm(){
-  // Camera permission state (depends on browser support)
   if (!navigator.permissions?.query){
     showToast("Permissions API not supported");
     return;
