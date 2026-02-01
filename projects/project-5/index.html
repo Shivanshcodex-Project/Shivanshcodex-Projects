@@ -3,36 +3,36 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Project 11 | 3D Hand Gesture Particle System</title>
+  <title>Project 11 | Advanced Hand Gesture Particle System</title>
   <link rel="stylesheet" href="./style.css" />
 
-  <!-- Three.js -->
   <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
-
-  <!-- MediaPipe Hands -->
   <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
 </head>
 <body>
   <canvas id="three"></canvas>
 
   <div class="ui">
+    <div class="topRow">
+      <div class="badge">SC • Advanced</div>
+      <div id="tplPill" class="pill">Template: Heart</div>
+    </div>
+
     <h1>3D Hand-Gesture<br/>Particle System</h1>
-    <p class="sub">Open palm = expand • Fist = contract • Move hand = control</p>
+    <p class="sub" id="hint">
+      ✋ open = expand • ✊ fist = contract • ☝️ one finger = next • ✌️ two fingers = burst • 🤏 pinch = color
+    </p>
 
     <div class="row">
       <button id="startBtn" type="button">Enable Camera</button>
       <button id="stopBtn" class="ghost" type="button" disabled>Stop</button>
+      <button id="nextBtn" class="ghost" type="button">Next Template</button>
     </div>
 
     <div id="status" class="status">Status: Ready</div>
-    <div class="tips">
-      <div>✅ Tip: First time click pe camera popup aana chahiye</div>
-      <div>⚠️ If blocked: Chrome → Site settings → Camera → Allow</div>
-    </div>
   </div>
 
   <video id="video" playsinline muted></video>
-
   <script src="./app.js"></script>
 </body>
 </html>
