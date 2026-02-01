@@ -1,6 +1,13 @@
 *{ margin:0; padding:0; box-sizing:border-box; font-family:system-ui, Arial; -webkit-tap-highlight-color:rgba(0,0,0,0); }
 body{ background:#060b1a; color:#eaf0ff; overflow:hidden; }
-canvas{ position:fixed; inset:0; display:block; }
+
+canvas{
+  position:fixed;
+  inset:0;
+  display:block;
+  pointer-events:none;   /* ✅ IMPORTANT: canvas won't block taps */
+}
+
 video{ display:none; }
 
 .ui{
@@ -15,7 +22,8 @@ video{ display:none; }
   backdrop-filter: blur(12px);
   box-shadow: 0 18px 70px rgba(0,0,0,.45);
   text-align:center;
-  z-index:10;
+  z-index:9999;
+  pointer-events:auto;  /* ✅ ensure UI takes clicks */
 }
 
 h1{ font-size:28px; line-height:1.05; font-weight:900; }
@@ -47,6 +55,7 @@ button.ghost{
   border:1px solid rgba(255,255,255,.12);
   background: rgba(0,0,0,.25);
   text-align:left;
+  word-break:break-word;
 }
 
 .tips{
