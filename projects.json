@@ -1,14 +1,20 @@
 [
   {
-    "title": "Project 1 - Portfolio",
-    "desc": "My main portfolio with cyber UI and sections.",
-    "tag": "web",
+    "title": "Project 1 - Privacy & Device Info",
+    "desc": "Shows device info, IP & permission awareness",
+    "tag": "security",
     "url": "./projects/project-1/index.html"
   },
   {
     "title": "Project 2 - Security Tool",
-    "desc": "My tool / demo project.",
-    "tag": "security",
+    "desc": "My tool / demo project",
+    "tag": "tool",
     "url": "./projects/project-2/index.html"
+  },
+  {
+    "title": "Project 3 - New Project",
+    "desc": "My third project description",
+    "tag": "college",
+    "url": "./projects/project-3/index.html"
   }
 ]
