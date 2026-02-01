@@ -1,0 +1,46 @@
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family: system-ui, Arial;
+}
+
+body{
+  background:#060b1a;
+  color:#eaf0ff;
+  overflow:hidden;
+}
+
+canvas{
+  position:fixed;
+  inset:0;
+}
+
+video{
+  display:none;
+}
+
+.ui{
+  position:fixed;
+  top:16px;
+  left:50%;
+  transform:translateX(-50%);
+  background:rgba(0,0,0,.45);
+  border:1px solid rgba(255,255,255,.15);
+  padding:14px 18px;
+  border-radius:18px;
+  text-align:center;
+  backdrop-filter: blur(10px);
+  z-index:10;
+}
+
+button{
+  margin-top:8px;
+  padding:10px 16px;
+  border-radius:14px;
+  border:1px solid #00d4ff;
+  background:linear-gradient(135deg,#00d4ff55,#6b5bff55);
+  color:#fff;
+  font-weight:800;
+  cursor:pointer;
+}
