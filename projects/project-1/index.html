@@ -1,15 +1,114 @@
 <!doctype html>
-<html>
+<html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Project 1</title>
+  <title>Project 1 | Privacy & Device Info</title>
+  <link rel="stylesheet" href="./style.css" />
 </head>
-<body style="margin:0;font-family:system-ui;background:#0b1020;color:#eaf0ff;display:grid;place-items:center;min-height:100vh;">
-  <div style="text-align:center;max-width:520px;padding:20px;">
-    <h1 style="margin:0 0 10px;">Project 1</h1>
-    <p style="opacity:.8;">Yaha tum apna real project ka code rakhna.</p>
-    <a href="../../dashboard.html" style="color:#00d4ff;text-decoration:none;font-weight:700;">← Back</a>
-  </div>
+<body>
+  <header class="top">
+    <a class="back" href="../../dashboard.html">← Back</a>
+
+    <div class="brand">
+      <div class="logo">SC</div>
+      <div>
+        <h1>Privacy & Device Info</h1>
+        <p class="sub">What a website can & can’t see — with your permission.</p>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button id="refreshBtn" class="btn ghost" type="button">Refresh</button>
+      <button id="copyAllBtn" class="btn" type="button">Copy Report</button>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="grid">
+      <div class="card">
+        <div class="cardHead">
+          <h2>Basic</h2>
+          <span class="pill">No permission</span>
+        </div>
+        <div class="kv" id="basicBox"></div>
+      </div>
+
+      <div class="card">
+        <div class="cardHead">
+          <h2>Device & Screen</h2>
+          <span class="pill">No permission</span>
+        </div>
+        <div class="kv" id="deviceBox"></div>
+      </div>
+
+      <div class="card">
+        <div class="cardHead">
+          <h2>Network</h2>
+          <span class="pill">Limited</span>
+        </div>
+        <div class="kv" id="netBox"></div>
+        <div class="rowBtns">
+          <button id="ipBtn" class="btn" type="button">Get Public IP</button>
+          <button id="ipGeoBtn" class="btn ghost" type="button">IP Approx Location</button>
+        </div>
+        <p class="note">
+          Public IP is fetched from a public service. “Approx location” is rough (city/region-level) and may be wrong.
+        </p>
+      </div>
+
+      <div class="card">
+        <div class="cardHead">
+          <h2>Permissions</h2>
+          <span class="pill warn">Needs consent</span>
+        </div>
+        <div class="kv" id="permBox"></div>
+
+        <div class="rowBtns">
+          <button id="gpsBtn" class="btn" type="button">Request GPS Location</button>
+          <button id="camBtn" class="btn ghost" type="button">Check Camera Permission</button>
+        </div>
+
+        <div class="mini" id="gpsBox"></div>
+        <p class="note">
+          GPS/Camera access only works if the user allows it. Websites cannot access your camera/photos silently.
+        </p>
+      </div>
+
+      <div class="card wide">
+        <div class="cardHead">
+          <h2>What a Website CAN / CAN’T See</h2>
+          <span class="pill ok">Awareness</span>
+        </div>
+        <div class="cols">
+          <div class="col">
+            <h3>✅ CAN see (mostly)</h3>
+            <ul>
+              <li>Browser & device type (user-agent)</li>
+              <li>Language, timezone, screen size</li>
+              <li>Some network hints (connection type if supported)</li>
+              <li>Public IP (if server/endpoint provides)</li>
+            </ul>
+          </div>
+          <div class="col">
+            <h3>🚫 CAN’T see without permission</h3>
+            <ul>
+              <li>Your camera, mic, gallery, contacts</li>
+              <li>Exact GPS location</li>
+              <li>Installed apps list</li>
+              <li>Private files / messages</li>
+            </ul>
+          </div>
+        </div>
+        <p class="note">
+          This project is for learning privacy. Always ask consent before collecting any user data.
+        </p>
+      </div>
+    </section>
+
+    <div id="toast" class="toast"></div>
+  </main>
+
+  <script src="./app.js"></script>
 </body>
 </html>
