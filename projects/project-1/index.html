@@ -14,7 +14,7 @@
       <div class="logo">SC</div>
       <div>
         <h1>Privacy & Device Info</h1>
-        <p class="sub">What a website can & can’t see — with your permission.</p>
+        <p class="sub">IP, device info & permissions awareness (premium UI).</p>
       </div>
     </div>
 
@@ -45,15 +45,18 @@
       <div class="card">
         <div class="cardHead">
           <h2>Network</h2>
-          <span class="pill">Limited</span>
+          <span class="pill">Public IP</span>
         </div>
+
         <div class="kv" id="netBox"></div>
+
         <div class="rowBtns">
           <button id="ipBtn" class="btn" type="button">Get Public IP</button>
           <button id="ipGeoBtn" class="btn ghost" type="button">IP Approx Location</button>
         </div>
+
         <p class="note">
-          Public IP is fetched from a public service. “Approx location” is rough (city/region-level) and may be wrong.
+          Public IP is fetched from a public service. Approx location is rough (may be wrong).
         </p>
       </div>
 
@@ -62,46 +65,44 @@
           <h2>Permissions</h2>
           <span class="pill warn">Needs consent</span>
         </div>
+
         <div class="kv" id="permBox"></div>
 
         <div class="rowBtns">
-          <button id="gpsBtn" class="btn" type="button">Request GPS Location</button>
-          <button id="camBtn" class="btn ghost" type="button">Check Camera Permission</button>
+          <button id="gpsBtn" class="btn" type="button">Allow GPS Location</button>
+          <button id="camBtn" class="btn ghost" type="button">Camera Permission State</button>
         </div>
 
-        <div class="mini" id="gpsBox"></div>
+        <div class="mini" id="gpsBox">GPS not requested.</div>
+
         <p class="note">
-          GPS/Camera access only works if the user allows it. Websites cannot access your camera/photos silently.
+          If GPS button seems not working: ensure site is on HTTPS (Vercel is OK) and allow permission popup.
         </p>
       </div>
 
+      <!-- ✅ MAP VIEW -->
       <div class="card wide">
         <div class="cardHead">
-          <h2>What a Website CAN / CAN’T See</h2>
-          <span class="pill ok">Awareness</span>
+          <h2>Map View</h2>
+          <span class="pill ok">Live</span>
         </div>
-        <div class="cols">
-          <div class="col">
-            <h3>✅ CAN see (mostly)</h3>
-            <ul>
-              <li>Browser & device type (user-agent)</li>
-              <li>Language, timezone, screen size</li>
-              <li>Some network hints (connection type if supported)</li>
-              <li>Public IP (if server/endpoint provides)</li>
-            </ul>
-          </div>
-          <div class="col">
-            <h3>🚫 CAN’T see without permission</h3>
-            <ul>
-              <li>Your camera, mic, gallery, contacts</li>
-              <li>Exact GPS location</li>
-              <li>Installed apps list</li>
-              <li>Private files / messages</li>
-            </ul>
+
+        <div class="mapWrap">
+          <iframe
+            id="mapFrame"
+            title="Map"
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+            src="about:blank">
+          </iframe>
+
+          <div id="mapHint" class="mapHint">
+            Map will appear when you fetch IP Approx Location or allow GPS.
           </div>
         </div>
+
         <p class="note">
-          This project is for learning privacy. Always ask consent before collecting any user data.
+          GPS = exact marker. IP geo = approximate marker. (For awareness/college project)
         </p>
       </div>
     </section>
