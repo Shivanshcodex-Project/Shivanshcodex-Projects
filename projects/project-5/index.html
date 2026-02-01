@@ -1,28 +1,38 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <title>3D Hand Gesture Particle System</title>
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <link rel="stylesheet" href="./style.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Project 11 | 3D Hand Gesture Particle System</title>
+  <link rel="stylesheet" href="./style.css" />
 
   <!-- Three.js -->
   <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
 
-  <!-- MediaPipe Hands -->
-  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
+  <!-- MediaPipe Hands (stable CDN paths) -->
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
 </head>
-
 <body>
+  <canvas id="three"></canvas>
+
   <div class="ui">
-    <h1>3D Hand-Gesture Particle System</h1>
-    <p>Open palm = expand | Fist = contract | Move hand = control particles</p>
-    <button id="startBtn">Enable Camera</button>
+    <h1>3D Hand-Gesture<br/>Particle System</h1>
+    <p class="sub">Open palm = expand • Fist = contract • Move hand = control</p>
+
+    <div class="row">
+      <button id="startBtn">Enable Camera</button>
+      <button id="stopBtn" class="ghost" disabled>Stop</button>
+    </div>
+
+    <div id="status" class="status">Status: Ready</div>
+    <div class="tips">
+      <div>✅ Works on HTTPS (Vercel)</div>
+      <div>⚠️ If camera blocked: Chrome → Site settings → Camera → Allow</div>
+    </div>
   </div>
 
-  <video id="video" autoplay muted playsinline></video>
-  <canvas id="three"></canvas>
+  <!-- Hidden video (source for MediaPipe) -->
+  <video id="video" playsinline muted></video>
 
   <script src="./app.js"></script>
 </body>
