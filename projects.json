@@ -1,20 +1,62 @@
 [
   {
     "title": "Project 1 - Privacy & Device Info",
-    "desc": "Shows device info, IP & permission awareness",
+    "desc": "Shows device info, public IP, permissions & map view (college awareness project)",
     "tag": "security",
     "url": "./projects/project-1/index.html"
   },
   {
-    "title": "Project 2 - Security Tool",
-    "desc": "My tool / demo project",
+    "title": "Project 2 - Network Info Tool",
+    "desc": "Displays network status, speed hints and connection details",
     "tag": "tool",
     "url": "./projects/project-2/index.html"
   },
   {
-    "title": "Project 3 - New Project",
-    "desc": "My third project description",
+    "title": "Project 3 - College Mini Project",
+    "desc": "Custom college project with separate UI and logic",
     "tag": "college",
     "url": "./projects/project-3/index.html"
+  },
+  {
+    "title": "Project 4 - Login System Demo",
+    "desc": "Username & password based authentication demo",
+    "tag": "auth",
+    "url": "./projects/project-4/index.html"
+  },
+  {
+    "title": "Project 5 - Cyber Awareness Page",
+    "desc": "Explains what data websites can and cannot access",
+    "tag": "security",
+    "url": "./projects/project-5/index.html"
+  },
+  {
+    "title": "Project 6 - UI/UX Showcase",
+    "desc": "Premium UI components, cards, buttons and animations",
+    "tag": "ui",
+    "url": "./projects/project-6/index.html"
+  },
+  {
+    "title": "Project 7 - JavaScript Tool",
+    "desc": "Small JavaScript based utility or calculator",
+    "tag": "javascript",
+    "url": "./projects/project-7/index.html"
+  },
+  {
+    "title": "Project 8 - API Integration Demo",
+    "desc": "Public API integration example with fetch",
+    "tag": "api",
+    "url": "./projects/project-8/index.html"
+  },
+  {
+    "title": "Project 9 - Portfolio Page",
+    "desc": "Personal portfolio style project page",
+    "tag": "portfolio",
+    "url": "./projects/project-9/index.html"
+  },
+  {
+    "title": "Project 10 - Final College Submission",
+    "desc": "Final year / major project submission demo",
+    "tag": "college",
+    "url": "./projects/project-10/index.html"
   }
 ]
