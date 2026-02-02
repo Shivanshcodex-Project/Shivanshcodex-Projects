@@ -1,0 +1,89 @@
+:root{
+  --bg:#0b1220;
+  --card: rgba(255,255,255,.06);
+  --border: rgba(255,255,255,.12);
+  --text:#e9f1f2;
+  --muted: rgba(233,241,242,.72);
+  --green:#22c55e;
+  --red:#ef4444;
+}
+
+*{ box-sizing:border-box; }
+html,body{
+  height:100%;
+  margin:0;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
+  background: var(--bg);
+  color: var(--text);
+}
+
+button{
+  cursor:pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.small{
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.pill{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding:8px 10px;
+  background: var(--card);
+  border:1px solid var(--border);
+  border-radius: 14px;
+}
+
+.hud{
+  padding:12px;
+  display:flex;
+  gap:12px;
+  align-items:center;
+  justify-content:space-between;
+  background: rgba(0,0,0,0.35);
+  border-bottom:1px solid rgba(255,255,255,0.08);
+}
+
+.btn{
+  border:0;
+  border-radius: 14px;
+  padding: 10px 14px;
+  font-weight: 900;
+}
+
+.btnPrimary{
+  background: var(--green);
+  color:#071b1e;
+}
+
+.barWrap{
+  width:120px;
+  height:10px;
+  border-radius: 999px;
+  background: rgba(255,255,255,.12);
+  overflow:hidden;
+  border: 1px solid rgba(255,255,255,.12);
+}
+
+.bar{
+  height:100%;
+  width:100%;
+}
+
+.stage{
+  position:relative;
+  height: calc(100vh - 64px);
+}
+
+.videoPreview{
+  position:absolute;
+  right:10px;
+  bottom:10px;
+  width:140px;
+  border-radius: 12px;
+  opacity: .9;
+  border:1px solid rgba(255,255,255,0.18);
+}
