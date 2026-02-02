@@ -1,375 +1,385 @@
-// ---------- UI ----------
-const canvas = document.getElementById("game");
-const speedEl = document.getElementById("speed");
-const scoreEl = document.getElementById("score");
-const turnEl  = document.getElementById("turn");
-const statusEl = document.getElementById("status");
-const modePill = document.getElementById("modePill");
+const canvas = document.getElementById("c");
+const mini = document.getElementById("minimap");
+const mctx = mini.getContext("2d");
 
-const startCamBtn = document.getElementById("startCam");
-const stopCamBtn  = document.getElementById("stopCam");
+const spdEl = document.getElementById("spd");
+const scrEl = document.getElementById("scr");
+const znEl  = document.getElementById("zn");
+const areaEl = document.getElementById("area");
+
+const resetBtn = document.getElementById("reset");
+const toggleCamBtn = document.getElementById("toggleCam");
 
 const joy = document.getElementById("joy");
 const knob = document.getElementById("knob");
-const accelBtn = document.getElementById("accelBtn");
-const brakeBtn = document.getElementById("brakeBtn");
+const accelBtn = document.getElementById("accel");
+const brakeBtn = document.getElementById("brake");
 
-// ---------- THREE ----------
+// ---------- THREE SETUP ----------
 const scene = new THREE.Scene();
-scene.fog = new THREE.Fog(0x040813, 10, 85);
+scene.fog = new THREE.Fog(0x050914, 15, 120);
 
-const camera = new THREE.PerspectiveCamera(62, innerWidth/innerHeight, 0.1, 200);
-
+const camera = new THREE.PerspectiveCamera(65, innerWidth/innerHeight, 0.1, 300);
 const renderer = new THREE.WebGLRenderer({ canvas, antialias:true });
 renderer.setSize(innerWidth, innerHeight);
 renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
-renderer.setClearColor(0x040813, 1);
+renderer.setClearColor(0x050914, 1);
 
-// lights
-scene.add(new THREE.HemisphereLight(0x99d9ff, 0x040813, 1.1));
-const sun = new THREE.DirectionalLight(0xffffff, 0.9);
-sun.position.set(8, 18, 10);
+// light
+scene.add(new THREE.HemisphereLight(0xa6ddff, 0x050914, 1.0));
+const sun = new THREE.DirectionalLight(0xffffff, 1.0);
+sun.position.set(10, 22, 10);
 scene.add(sun);
 
-// ground glow (subtle)
-const glow = new THREE.Mesh(
-  new THREE.PlaneGeometry(200,200),
-  new THREE.MeshBasicMaterial({ color:0x071425, transparent:true, opacity:0.25 })
-);
-glow.rotation.x = -Math.PI/2;
-glow.position.y = -0.02;
-scene.add(glow);
+// ---------- WORLD (mini city map) ----------
+const WORLD = 120; // world size
+const roads = [];
+const buildings = [];
+const roadMat = new THREE.MeshStandardMaterial({ color:0x141414, roughness:0.95 });
+const laneMat = new THREE.MeshBasicMaterial({ color:0x8aa0b6, transparent:true, opacity:0.55 });
+const neonEdge = new THREE.MeshBasicMaterial({ color:0x00d4ff, transparent:true, opacity:0.35 });
+const groundMat = new THREE.MeshStandardMaterial({ color:0x071225, roughness:1 });
 
-// ---------- CAR ----------
+const ground = new THREE.Mesh(new THREE.PlaneGeometry(WORLD, WORLD), groundMat);
+ground.rotation.x = -Math.PI/2;
+ground.position.y = -0.02;
+scene.add(ground);
+
+// make a simple grid-road city: main roads + side roads
+function addRoad(x, z, w, h){
+  const g = new THREE.Group();
+  const r = new THREE.Mesh(new THREE.PlaneGeometry(w, h), roadMat);
+  r.rotation.x = -Math.PI/2;
+  g.add(r);
+
+  // lane line center
+  const lane = new THREE.Mesh(new THREE.PlaneGeometry(Math.min(0.4,w*0.07), h*0.92), laneMat);
+  lane.rotation.x = -Math.PI/2;
+  lane.position.y = 0.01;
+  g.add(lane);
+
+  // neon edges
+  const e1 = new THREE.Mesh(new THREE.PlaneGeometry(0.15, h), neonEdge);
+  e1.rotation.x = -Math.PI/2;
+  e1.position.set(-w/2 + 0.12, 0.015, 0);
+  g.add(e1);
+
+  const e2 = e1.clone();
+  e2.position.x = w/2 - 0.12;
+  g.add(e2);
+
+  g.position.set(x, 0, z);
+  scene.add(g);
+  roads.push({x,z,w,h});
+  return g;
+}
+
+// main roads
+addRoad(0, 0, 14, WORLD);      // vertical main
+addRoad(0, 0, WORLD, 14);      // horizontal main
+
+// extra roads
+for(let i=-40;i<=40;i+=20){
+  if(i!==0){
+    addRoad(i, 0, 10, WORLD);
+    addRoad(0, i, WORLD, 10);
+  }
+}
+
+// buildings (blocks)
+function addBuilding(x,z,w,d,h,color){
+  const m = new THREE.Mesh(
+    new THREE.BoxGeometry(w, h, d),
+    new THREE.MeshStandardMaterial({ color, roughness:0.55, metalness:0.08 })
+  );
+  m.position.set(x, h/2, z);
+  scene.add(m);
+  buildings.push(m);
+}
+
+function rand(a,b){ return a + Math.random()*(b-a); }
+
+for(let i=0;i<90;i++){
+  const x = rand(-WORLD/2+6, WORLD/2-6);
+  const z = rand(-WORLD/2+6, WORLD/2-6);
+
+  // keep buildings away from main roads
+  if(Math.abs(x) < 10 || Math.abs(z) < 10) continue;
+  if((Math.abs(x)%20) < 8 || (Math.abs(z)%20) < 8) continue;
+
+  addBuilding(
+    x, z,
+    rand(3,7),
+    rand(3,7),
+    rand(4,16),
+    new THREE.Color().setHSL(0.55 + Math.random()*0.12, 0.45, 0.45)
+  );
+}
+
+// ---------- CAR (player) ----------
 const car = new THREE.Group();
+
+// body
 const body = new THREE.Mesh(
-  new THREE.BoxGeometry(1.2,0.55,2.2),
-  new THREE.MeshStandardMaterial({ color:0xff3b30, metalness:0.25, roughness:0.35 })
+  new THREE.BoxGeometry(1.4, 0.55, 2.4),
+  new THREE.MeshStandardMaterial({ color:0x0aa6ff, metalness:0.25, roughness:0.25 })
 );
 body.position.y = 0.35;
 car.add(body);
 
-const neon = new THREE.Mesh(
-  new THREE.BoxGeometry(1.35,0.12,2.35),
+// cabin
+const cabin = new THREE.Mesh(
+  new THREE.BoxGeometry(1.05, 0.45, 1.1),
+  new THREE.MeshStandardMaterial({ color:0x0b1020, metalness:0.1, roughness:0.2 })
+);
+cabin.position.set(0, 0.70, -0.1);
+car.add(cabin);
+
+// neon underglow
+const glow = new THREE.Mesh(
+  new THREE.BoxGeometry(1.55, 0.08, 2.55),
   new THREE.MeshBasicMaterial({ color:0x00d4ff, transparent:true, opacity:0.35 })
 );
-neon.position.y = 0.12;
-car.add(neon);
+glow.position.y = 0.08;
+car.add(glow);
+
+// wheels neon (simple rings)
+function wheel(x,z){
+  const w = new THREE.Mesh(
+    new THREE.CylinderGeometry(0.28,0.28,0.22,18),
+    new THREE.MeshStandardMaterial({ color:0x111111, roughness:0.9 })
+  );
+  w.rotation.z = Math.PI/2;
+  w.position.set(x, 0.22, z);
+  car.add(w);
+
+  const ring = new THREE.Mesh(
+    new THREE.TorusGeometry(0.28, 0.06, 10, 22),
+    new THREE.MeshBasicMaterial({ color:0x00d4ff, transparent:true, opacity:0.7 })
+  );
+  ring.position.copy(w.position);
+  ring.rotation.y = Math.PI/2;
+  car.add(ring);
+}
+wheel(-0.65, 0.85); wheel(0.65, 0.85);
+wheel(-0.65,-0.85); wheel(0.65,-0.85);
 
 scene.add(car);
 
-// ---------- TRACK (curved road segments) ----------
-const SEG_LEN = 8;
-const SEG_W   = 7;
-const NUM_SEG = 34;
+// spawn
+let pos = new THREE.Vector3(0,0,20);
+let yaw = 0;
+car.position.copy(pos);
+car.rotation.y = yaw;
 
-const roadMat = new THREE.MeshStandardMaterial({ color:0x171717, roughness:0.9, metalness:0.0 });
-const edgeMat = new THREE.MeshBasicMaterial({ color:0x0aa6ff });
-const laneMat = new THREE.MeshBasicMaterial({ color:0xffffff });
-
-function makeSegment(){
-  const g = new THREE.Group();
-
-  const road = new THREE.Mesh(new THREE.PlaneGeometry(SEG_W, SEG_LEN), roadMat);
-  road.rotation.x = -Math.PI/2;
-  g.add(road);
-
-  // edges neon
-  const eL = new THREE.Mesh(new THREE.PlaneGeometry(0.08, SEG_LEN), edgeMat);
-  eL.rotation.x = -Math.PI/2;
-  eL.position.set(-SEG_W/2 + 0.1, 0.015, 0);
-  g.add(eL);
-
-  const eR = eL.clone();
-  eR.position.x = SEG_W/2 - 0.1;
-  g.add(eR);
-
-  // lane lines
-  const l1 = new THREE.Mesh(new THREE.PlaneGeometry(0.05, SEG_LEN), laneMat);
-  l1.rotation.x = -Math.PI/2;
-  l1.position.set(-SEG_W/6, 0.02, 0);
-  g.add(l1);
-
-  const l2 = l1.clone();
-  l2.position.x = SEG_W/6;
-  g.add(l2);
-
-  return g;
-}
-
-const segments = [];
-let trackHead = new THREE.Vector3(0,0,0);
-let heading = 0;               // current road direction (radians)
-let curve = 0;                 // current curvature
-let targetCurve = 0;           // where road wants to go
-
-function placeNextSegment(seg, prevPos, prevHeading){
-  // slowly change curve
-  curve += (targetCurve - curve) * 0.05;
-  const newHeading = prevHeading + curve;
-
-  // move forward in newHeading direction
-  const dx = Math.sin(newHeading) * SEG_LEN;
-  const dz = Math.cos(newHeading) * SEG_LEN;
-
-  const newPos = prevPos.clone().add(new THREE.Vector3(dx,0,dz));
-  seg.position.copy(newPos);
-  seg.rotation.y = newHeading;
-
-  return { pos:newPos, heading:newHeading };
-}
-
-// init segments
-let lastPos = new THREE.Vector3(0,0,0);
-let lastHeading = 0;
-for(let i=0;i<NUM_SEG;i++){
-  const s = makeSegment();
-  scene.add(s);
-  const out = placeNextSegment(s, lastPos, lastHeading);
-  lastPos = out.pos; lastHeading = out.heading;
-  segments.push(s);
-}
-trackHead.copy(lastPos);
-
-// ---------- GAME STATE ----------
-let speed = 0;
-let accel = 0;
-let steer = 0;
-let score = 0;
-
-let laneX = 0;           // car lateral offset
-let laneTarget = 0;
-
-let running = true;
-
-// camera follow (third-person)
-function updateCamera(){
-  // camera behind car aligned with heading
-  const back = new THREE.Vector3(
-    -Math.sin(heading)*8,
-     6,
-    -Math.cos(heading)*8
-  );
-  const camPos = car.position.clone().add(back);
-  camera.position.lerp(camPos, 0.10);
-
-  const look = car.position.clone().add(new THREE.Vector3(Math.sin(heading)*10, 1.2, Math.cos(heading)*10));
-  camera.lookAt(look);
-}
-
-// ---------- INPUT: TOUCH joystick + pedals ----------
+// ---------- CONTROLS (mobile-first) ----------
 let joyActive = false;
 let joyStart = {x:0,y:0};
-let joyVec = {x:0,y:0};
+let joyVec = {x:0,y:0}; // x for steer, y unused
 
-function setKnob(x,y){
-  knob.style.transform = `translate(calc(-50% + ${x}px), calc(-50% + ${y}px))`;
+function setKnob(px,py){
+  knob.style.transform = `translate(calc(-50% + ${px}px), calc(-50% + ${py}px))`;
 }
 
-joy.addEventListener("pointerdown", (e)=>{
+joy.addEventListener("pointerdown",(e)=>{
   joyActive = true;
   joy.setPointerCapture(e.pointerId);
   joyStart = {x:e.clientX, y:e.clientY};
 });
 
-joy.addEventListener("pointermove", (e)=>{
+joy.addEventListener("pointermove",(e)=>{
   if(!joyActive) return;
   const dx = e.clientX - joyStart.x;
   const dy = e.clientY - joyStart.y;
   const max = 38;
   const clx = Math.max(-max, Math.min(max, dx));
   const cly = Math.max(-max, Math.min(max, dy));
-  joyVec.x = clx/max;     // -1..1 steer
-  joyVec.y = cly/max;     // unused
-  setKnob(clx, cly);
+  joyVec.x = clx/max;
+  joyVec.y = cly/max;
+  setKnob(clx,cly);
 });
 
 function endJoy(){
-  joyActive = false;
-  joyVec.x = 0; joyVec.y = 0;
+  joyActive=false;
+  joyVec.x=0; joyVec.y=0;
   setKnob(0,0);
 }
 joy.addEventListener("pointerup", endJoy);
 joy.addEventListener("pointercancel", endJoy);
 
-let pedalAccel = false, pedalBrake = false;
-accelBtn.addEventListener("pointerdown", ()=> pedalAccel = true);
-accelBtn.addEventListener("pointerup", ()=> pedalAccel = false);
-accelBtn.addEventListener("pointercancel", ()=> pedalAccel = false);
+let accelHold=false, brakeHold=false;
+accelBtn.addEventListener("pointerdown",()=>accelHold=true);
+accelBtn.addEventListener("pointerup",()=>accelHold=false);
+accelBtn.addEventListener("pointercancel",()=>accelHold=false);
 
-brakeBtn.addEventListener("pointerdown", ()=> pedalBrake = true);
-brakeBtn.addEventListener("pointerup", ()=> pedalBrake = false);
-brakeBtn.addEventListener("pointercancel", ()=> pedalBrake = false);
+brakeBtn.addEventListener("pointerdown",()=>brakeHold=true);
+brakeBtn.addEventListener("pointerup",()=>brakeHold=false);
+brakeBtn.addEventListener("pointercancel",()=>brakeHold=false);
 
-// ---------- INPUT: HAND (MediaPipe) ----------
-let mpCamera = null;
-let handMode = false;
-let handSteer = 0;
-let handAccel = 0;   // 0..1
-let handBrake = 0;
+// keyboard fallback (PC)
+const keys = {};
+addEventListener("keydown",(e)=> keys[e.key.toLowerCase()] = true);
+addEventListener("keyup",(e)=> keys[e.key.toLowerCase()] = false);
 
-const hands = new Hands({ locateFile: f => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${f}` });
-hands.setOptions({
-  maxNumHands: 1,
-  minDetectionConfidence: 0.70,
-  minTrackingConfidence: 0.70
+// ---------- CAMERA MODES ----------
+let camMode = "follow"; // follow / chase
+toggleCamBtn.addEventListener("click", ()=>{
+  camMode = (camMode==="follow") ? "chase" : "follow";
+  toggleCamBtn.textContent = `Cam: ${camMode==="follow" ? "Follow" : "Chase"}`;
 });
 
-hands.onResults((res)=>{
-  if(!res.multiHandLandmarks || !res.multiHandLandmarks[0]){
-    statusEl.textContent = handMode ? "Camera ON • No hand detected" : statusEl.textContent;
-    return;
-  }
+resetBtn.addEventListener("click", resetGame);
 
-  const h = res.multiHandLandmarks[0];
-
-  // steer by palm center x (landmark 9)
-  handSteer = (h[9].x - 0.5) * 2.6;     // -1.3..1.3 approx
-
-  // open/fist detection
-  const open =
-    (h[8].y < h[6].y) &&
-    (h[12].y < h[10].y);
-
-  const fist =
-    (h[8].y > h[6].y) &&
-    (h[12].y > h[10].y);
-
-  handAccel = open ? 1 : 0;
-  handBrake = fist ? 1 : 0;
-
-  statusEl.textContent = "Camera ON • Hand tracking ✅";
-});
-
-async function startHand(){
-  try{
-    const stream = await navigator.mediaDevices.getUserMedia({ video:{ facingMode:"user" }, audio:false });
-    const video = document.createElement("video");
-    video.srcObject = stream;
-    await video.play();
-
-    mpCamera = new Camera(video, {
-      onFrame: async () => { await hands.send({ image: video }); }
-    });
-    mpCamera.start();
-
-    handMode = true;
-    modePill.textContent = "Hand";
-    startCamBtn.disabled = true;
-    stopCamBtn.disabled  = false;
-    statusEl.textContent = "Camera ON • Starting...";
-  }catch(err){
-    statusEl.textContent = "Camera blocked. Chrome → Site settings → Camera → Allow";
-  }
+function resetGame(){
+  pos.set(0,0,20);
+  yaw = 0;
+  v = 0;
+  score = 0;
 }
 
-function stopHand(){
-  try{ mpCamera && mpCamera.stop(); }catch(e){}
-  mpCamera = null;
-  handMode = false;
-  modePill.textContent = "Manual";
-  startCamBtn.disabled = false;
-  stopCamBtn.disabled  = true;
-  statusEl.textContent = "Stopped";
-}
+// ---------- GAME PHYSICS ----------
+let v = 0;           // speed
+let score = 0;
+let steer = 0;
 
-startCamBtn.addEventListener("click", startHand);
-stopCamBtn.addEventListener("click", stopHand);
+function clamp(x,a,b){ return Math.max(a, Math.min(b, x)); }
 
-// ---------- GAME LOOP ----------
 const clock = new THREE.Clock();
-car.position.set(0,0,0);
+
+function updateCamera(){
+  if(camMode==="follow"){
+    const back = new THREE.Vector3(Math.sin(yaw)*-7, 5.2, Math.cos(yaw)*-7);
+    const target = pos.clone().add(back);
+    camera.position.lerp(target, 0.12);
+    camera.lookAt(pos.x, 1.2, pos.z);
+  } else {
+    // chase: lower, closer
+    const back = new THREE.Vector3(Math.sin(yaw)*-4.6, 3.1, Math.cos(yaw)*-4.6);
+    const target = pos.clone().add(back);
+    camera.position.lerp(target, 0.12);
+    const look = pos.clone().add(new THREE.Vector3(Math.sin(yaw)*6, 1.1, Math.cos(yaw)*6));
+    camera.lookAt(look);
+  }
+}
+
+function zoneOf(p){
+  // simple zones by quadrants
+  if(p.x>=0 && p.z>=0) return "A";
+  if(p.x<0 && p.z>=0) return "B";
+  if(p.x<0 && p.z<0) return "C";
+  return "D";
+}
+function areaName(z){
+  return ({A:"Downtown",B:"Harbor",C:"Old City",D:"Uptown"})[z] || "City";
+}
+
+// minimap draw
+function drawMini(){
+  const w = mini.width = mini.clientWidth * devicePixelRatio;
+  const h = mini.height = mini.clientHeight * devicePixelRatio;
+
+  mctx.clearRect(0,0,w,h);
+
+  // background
+  mctx.fillStyle = "rgba(0,0,0,.35)";
+  mctx.fillRect(0,0,w,h);
+
+  // map scale
+  const scale = w / WORLD;
+  const cx = w/2;
+  const cz = h/2;
+
+  // roads
+  mctx.strokeStyle = "rgba(0,212,255,.35)";
+  mctx.lineWidth = 2 * devicePixelRatio;
+  roads.forEach(r=>{
+    const x = cx + r.x*scale - (r.w*scale)/2;
+    const z = cz + r.z*scale - (r.h*scale)/2;
+    mctx.strokeRect(x, z, r.w*scale, r.h*scale);
+  });
+
+  // player dot
+  const px = cx + pos.x*scale;
+  const pz = cz + pos.z*scale;
+
+  mctx.fillStyle = "#00d4ff";
+  mctx.beginPath();
+  mctx.arc(px, pz, 4.2*devicePixelRatio, 0, Math.PI*2);
+  mctx.fill();
+
+  // direction line
+  mctx.strokeStyle = "rgba(255,255,255,.8)";
+  mctx.beginPath();
+  mctx.moveTo(px,pz);
+  mctx.lineTo(px + Math.sin(yaw)*12*devicePixelRatio, pz + Math.cos(yaw)*12*devicePixelRatio);
+  mctx.stroke();
+
+  // border
+  mctx.strokeStyle = "rgba(255,255,255,.12)";
+  mctx.strokeRect(0,0,w,h);
+}
 
 function tick(){
   requestAnimationFrame(tick);
-  if(!running) return;
-
   const dt = Math.min(0.033, clock.getDelta());
 
-  // decide inputs (hand has priority if enabled)
-  const steerIn = handMode ? handSteer : joyVec.x;
-  const accelIn = handMode ? handAccel : (pedalAccel ? 1 : 0);
-  const brakeIn = handMode ? handBrake : (pedalBrake ? 1 : 0);
+  // input merge
+  const kbSteer = (keys["a"]||keys["arrowleft"] ? -1 : 0) + (keys["d"]||keys["arrowright"] ? 1 : 0);
+  const kbAccel = (keys["w"]||keys["arrowup"]) ? 1 : 0;
+  const kbBrake = (keys["s"]||keys["arrowdown"]) ? 1 : 0;
 
-  // smooth steer
-  steer += (steerIn - steer) * 0.12;
+  const steerIn = clamp(joyVec.x + kbSteer, -1, 1);
+  const accelIn = (accelHold || kbAccel) ? 1 : 0;
+  const brakeIn = (brakeHold || kbBrake) ? 1 : 0;
 
-  // speed physics
-  const targetSpeed = accelIn ? 18 : 6; // idle move even without accel (game feel)
-  const braking = brakeIn ? 1 : 0;
+  // smoothing
+  steer += (steerIn - steer)*0.14;
 
-  // accelerate towards target
-  speed += (targetSpeed - speed) * (accelIn ? 0.06 : 0.02);
-  // brake
-  speed -= braking * 30 * dt;
-  speed = Math.max(0, Math.min(22, speed));
+  // speed
+  const maxV = 18;
+  if(accelIn) v += 22*dt;
+  else v -= 10*dt; // natural slowdown
+  if(brakeIn) v -= 34*dt;
 
-  // turn system: heading changes with road curve + steer
-  // more speed = more stable turning
-  const steerPower = 0.9;
-  heading += (curve * 0.6 + steer * 0.015 * steerPower) * (speed/18);
+  // drift (hold brake + steer)
+  const drifting = brakeIn && Math.abs(steer) > 0.35;
+  v = clamp(v, 0, maxV);
 
-  // move car forward in heading
-  const forward = new THREE.Vector3(Math.sin(heading), 0, Math.cos(heading));
-  car.position.addScaledVector(forward, speed * dt);
+  // steering: more speed => more turning
+  const turnPower = (0.55 + v/maxV) * (drifting ? 1.65 : 1.0);
+  yaw += steer * turnPower * dt;
 
-  // lane offset (car stays on road)
-  laneTarget = THREE.MathUtils.clamp(steer * 2.0, -2.1, 2.1);
-  laneX += (laneTarget - laneX) * 0.10;
+  // move
+  pos.x += Math.sin(yaw) * v * dt;
+  pos.z += Math.cos(yaw) * v * dt;
 
-  // apply lateral offset perpendicular to heading
-  const right = new THREE.Vector3(Math.cos(heading), 0, -Math.sin(heading));
-  const basePos = car.position.clone();
-  car.position.copy(basePos.addScaledVector(right, laneX));
+  // keep within world bounds
+  pos.x = clamp(pos.x, -WORLD/2+3, WORLD/2-3);
+  pos.z = clamp(pos.z, -WORLD/2+3, WORLD/2-3);
 
-  // car tilt / yaw
-  car.rotation.y = heading;
-  car.rotation.z += (-steer*0.02 - car.rotation.z) * 0.12;
+  // apply to car
+  car.position.set(pos.x, 0, pos.z);
+  car.rotation.y = yaw;
+  car.rotation.z += (-steer*0.04 - car.rotation.z)*0.12;
 
-  // camera follow
+  // camera + UI
   updateCamera();
 
-  // recycle road segments ahead of car
-  // if car passed the first segment, move it to end
-  // (simple: find segment far behind camera)
-  const camPos = camera.position;
-  for(let i=0;i<segments.length;i++){
-    const s = segments[i];
-    // if segment is too far behind car, recycle
-    if(s.position.distanceTo(car.position) > 120 && isBehind(s.position, car.position, heading)){
-      // randomize targetCurve sometimes (GTA-like turns)
-      if(Math.random() < 0.25){
-        targetCurve = THREE.MathUtils.clamp((Math.random()-0.5)*0.08, -0.04, 0.04);
-      }
+  score += v * dt * (drifting ? 1.35 : 1.0);
 
-      // place this segment after trackHead
-      const out = placeNextSegment(s, trackHead, lastHeading);
-      trackHead.copy(out.pos);
-      lastHeading = out.heading;
-    }
-  }
+  const z = zoneOf(pos);
+  znEl.textContent = z;
+  areaEl.textContent = areaName(z);
 
-  // score
-  score += speed * dt * 0.9;
+  spdEl.textContent = v.toFixed(0);
+  scrEl.textContent = score.toFixed(0);
 
-  // UI
-  speedEl.textContent = speed.toFixed(0);
-  scoreEl.textContent = score.toFixed(0);
-  turnEl.textContent  = (targetCurve*1000).toFixed(0);
-
+  drawMini();
   renderer.render(scene, camera);
-}
-
-function isBehind(segPos, carPos, head){
-  // check if segment is behind car along heading direction
-  const toSeg = segPos.clone().sub(carPos);
-  const forward = new THREE.Vector3(Math.sin(head),0,Math.cos(head));
-  return toSeg.dot(forward) < -20; // behind
 }
 
 tick();
 
-// resize
 addEventListener("resize", ()=>{
   camera.aspect = innerWidth/innerHeight;
   camera.updateProjectionMatrix();
