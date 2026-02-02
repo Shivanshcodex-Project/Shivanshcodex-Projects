@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover" />
-  <title>GestureDrive 3D • ShivanshCodex</title>
+  <title>GestureDrive 3D • Premium</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -11,13 +11,13 @@
   <video id="video" playsinline muted autoplay></video>
 
   <div class="hud" id="hud">
-    <div class="row">
-      <div class="chip">GestureDrive 3D</div>
-      <div class="chip right" id="stateChip">Ready</div>
+    <div class="topRow">
+      <div class="chip">SC • GestureDrive</div>
+      <div class="chip chipLive" id="stateChip">Ready</div>
     </div>
 
     <h1>GestureDrive 3D</h1>
-    <p class="sub">🖐️ steer • ✋ accel • ✊ brake • 🤏 drift</p>
+    <p class="sub">🖐️ steer • ✋ accel • ✊ brake • 🤏 drift • 👍 nitro</p>
 
     <div class="btnRow">
       <button id="startBtn" class="btn primary">Enable Camera</button>
@@ -29,24 +29,22 @@
       <div class="stat"><span class="k">Speed</span><span class="v" id="spd">0</span></div>
       <div class="stat"><span class="k">Level</span><span class="v" id="lvl">1</span></div>
       <div class="stat"><span class="k">Score</span><span class="v" id="scr">0</span></div>
+      <div class="stat"><span class="k">Nitro</span><span class="v" id="nit">100</span></div>
     </div>
 
-    <div class="hint" id="hint">
-      Tip: bright light + hand center + 30–60cm distance.
-    </div>
+    <div class="hint" id="hint">Tip: bright light + hand center + 30–60cm distance</div>
   </div>
+
+  <canvas id="minimap"></canvas>
 
   <div class="toast" id="toast">Tap “Enable Camera”</div>
   <div class="err" id="err" style="display:none;"></div>
 
-  <!-- ✅ Three.js + GLTFLoader (UMD) -->
-  <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/examples/js/loaders/GLTFLoader.js"></script>
-
-  <!-- ✅ MediaPipe Hands -->
+  <!-- ✅ MediaPipe -->
   <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.min.js"></script>
 
-  <script src="app.js"></script>
+  <!-- ✅ App as module (imports Three + GLTFLoader inside) -->
+  <script type="module" src="app.js"></script>
 </body>
 </html>
