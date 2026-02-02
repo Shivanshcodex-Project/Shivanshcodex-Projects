@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>GestureDrive 3D • ShivanshCodex</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <canvas id="c"></canvas>
+  <video id="video" playsinline muted autoplay></video>
+
+  <div class="hud" id="hud">
+    <div class="row">
+      <div class="chip">SC • GestureDrive 3D</div>
+      <div class="chip right" id="stateChip">Ready</div>
+    </div>
+
+    <h1>GestureDrive 3D</h1>
+    <p class="sub">Left hand = Steering • Right hand = Speed</p>
+
+    <div class="controls">
+      <button class="btn primary" id="startBtn">Enable Camera</button>
+      <button class="btn" id="stopBtn" disabled>Stop</button>
+      <button class="btn ghost" id="toggleHudBtn">Hide UI</button>
+    </div>
+
+    <div class="stats">
+      <div class="stat">
+        <span class="k">Speed</span>
+        <span class="v" id="speedVal">0</span>
+      </div>
+      <div class="stat">
+        <span class="k">Score</span>
+        <span class="v" id="scoreVal">0</span>
+      </div>
+      <div class="stat">
+        <span class="k">Best</span>
+        <span class="v" id="bestVal">0</span>
+      </div>
+    </div>
+
+    <div class="hint" id="hint">
+      🖐️ Left hand move = steer • ✋ Right open = accelerate • ✊ fist = brake • ✌️ = boost
+    </div>
+
+    <div class="mini">
+      If camera doesn’t work: Chrome → Site settings → Camera → Allow (and refresh).
+    </div>
+  </div>
+
+  <div class="toast" id="toast">Tap “Enable Camera”</div>
+
+  <!-- Three.js -->
+  <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+
+  <!-- MediaPipe Hands -->
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.min.js"></script>
+
+  <script src="app.js"></script>
+</body>
+</html>
