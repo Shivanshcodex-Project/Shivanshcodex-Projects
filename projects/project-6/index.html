@@ -1,18 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-  <title>GestureDrive 3D</title>
-  <link rel="stylesheet" href="./style.css" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GestureDrive – Dr Style</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <canvas id="game"></canvas>
 
-<div class="ui">
-  <h2>GestureDrive 3D</h2>
-  <p>✋ accelerate • ✊ brake • 👈👉 steer</p>
+<div class="hud">
+  <div class="title">GestureDrive</div>
+  <div class="sub">Dr-Driving style • Hand Control</div>
+
+  <div class="controls">
+    ✋ accelerate • ✊ brake • 👈👉 steer
+  </div>
 
   <div class="row">
     <button id="start">Enable Camera</button>
@@ -20,20 +24,17 @@
   </div>
 
   <div class="stats">
-    <span>Speed: <b id="speed">0</b></span>
-    <span>Score: <b id="score">0</b></span>
+    <div>Speed<br><b id="speed">0</b></div>
+    <div>Score<br><b id="score">0</b></div>
   </div>
 
   <div id="status">Ready</div>
 </div>
 
-<!-- Three.js (NON MODULE = mobile safe) -->
 <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
-
-<!-- MediaPipe -->
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.min.js"></script>
 
-<script src="./app.js"></script>
+<script src="app.js"></script>
 </body>
 </html>
