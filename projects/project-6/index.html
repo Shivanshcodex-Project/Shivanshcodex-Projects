@@ -2,49 +2,38 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover" />
-  <title>GestureDrive 3D • Premium</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>GestureDrive 3D</title>
+  <link rel="stylesheet" href="./style.css" />
 </head>
 <body>
-  <canvas id="c"></canvas>
-  <video id="video" playsinline muted autoplay></video>
 
-  <div class="hud" id="hud">
-    <div class="topRow">
-      <div class="chip">SC • GestureDrive</div>
-      <div class="chip chipLive" id="stateChip">Ready</div>
-    </div>
+<canvas id="game"></canvas>
 
-    <h1>GestureDrive 3D</h1>
-    <p class="sub">🖐️ steer • ✋ accel • ✊ brake • 🤏 drift • 👍 nitro</p>
+<div class="ui">
+  <h2>GestureDrive 3D</h2>
+  <p>✋ accelerate • ✊ brake • 👈👉 steer</p>
 
-    <div class="btnRow">
-      <button id="startBtn" class="btn primary">Enable Camera</button>
-      <button id="stopBtn" class="btn" disabled>Stop</button>
-      <button id="toggleBtn" class="btn ghost">Hide UI</button>
-    </div>
-
-    <div class="stats">
-      <div class="stat"><span class="k">Speed</span><span class="v" id="spd">0</span></div>
-      <div class="stat"><span class="k">Level</span><span class="v" id="lvl">1</span></div>
-      <div class="stat"><span class="k">Score</span><span class="v" id="scr">0</span></div>
-      <div class="stat"><span class="k">Nitro</span><span class="v" id="nit">100</span></div>
-    </div>
-
-    <div class="hint" id="hint">Tip: bright light + hand center + 30–60cm distance</div>
+  <div class="row">
+    <button id="start">Enable Camera</button>
+    <button id="stop" disabled>Stop</button>
   </div>
 
-  <canvas id="minimap"></canvas>
+  <div class="stats">
+    <span>Speed: <b id="speed">0</b></span>
+    <span>Score: <b id="score">0</b></span>
+  </div>
 
-  <div class="toast" id="toast">Tap “Enable Camera”</div>
-  <div class="err" id="err" style="display:none;"></div>
+  <div id="status">Ready</div>
+</div>
 
-  <!-- ✅ MediaPipe -->
-  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.min.js"></script>
+<!-- Three.js (NON MODULE = mobile safe) -->
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
 
-  <!-- ✅ App as module (imports Three + GLTFLoader inside) -->
-  <script type="module" src="app.js"></script>
+<!-- MediaPipe -->
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.min.js"></script>
+
+<script src="./app.js"></script>
 </body>
 </html>
