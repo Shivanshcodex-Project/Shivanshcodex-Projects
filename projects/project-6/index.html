@@ -1,40 +1,60 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>GestureDrive – Dr Style</title>
-<link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>GestureDrive 3D</title>
+  <link rel="stylesheet" href="./style.css" />
 </head>
 <body>
+  <canvas id="game"></canvas>
 
-<canvas id="game"></canvas>
+  <!-- HUD -->
+  <div class="hud">
+    <div class="top">
+      <div class="badge">SC • GestureDrive</div>
+      <div class="mode" id="modePill">Manual</div>
+    </div>
 
-<div class="hud">
-  <div class="title">GestureDrive</div>
-  <div class="sub">Dr-Driving style • Hand Control</div>
+    <div class="title">GestureDrive 3D</div>
+    <div class="sub">Turns like GTA • Hand + Touch Controls</div>
 
-  <div class="controls">
-    ✋ accelerate • ✊ brake • 👈👉 steer
+    <div class="row">
+      <button id="startCam" class="primary">Enable Camera</button>
+      <button id="stopCam" class="ghost" disabled>Stop</button>
+    </div>
+
+    <div class="stats">
+      <div class="stat"><span>Speed</span><b id="speed">0</b></div>
+      <div class="stat"><span>Score</span><b id="score">0</b></div>
+      <div class="stat"><span>Turn</span><b id="turn">0</b></div>
+    </div>
+
+    <div class="hint" id="hint">
+      ✋ open = accelerate • ✊ fist = brake • palm move = steer <br/>
+      Touch fallback: left joystick + accel/brake buttons
+    </div>
+
+    <div class="status" id="status">Ready</div>
   </div>
 
-  <div class="row">
-    <button id="start">Enable Camera</button>
-    <button id="stop" disabled>Stop</button>
+  <!-- Touch Controls -->
+  <div class="touch">
+    <div class="joystick" id="joy">
+      <div class="joyKnob" id="knob"></div>
+    </div>
+
+    <div class="pedals">
+      <button id="accelBtn" class="pedal accel">ACCEL</button>
+      <button id="brakeBtn" class="pedal brake">BRAKE</button>
+    </div>
   </div>
 
-  <div class="stats">
-    <div>Speed<br><b id="speed">0</b></div>
-    <div>Score<br><b id="score">0</b></div>
-  </div>
+  <!-- libs (non-module = mobile safe) -->
+  <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.min.js"></script>
 
-  <div id="status">Ready</div>
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.min.js"></script>
-
-<script src="app.js"></script>
+  <script src="./app.js"></script>
 </body>
 </html>
