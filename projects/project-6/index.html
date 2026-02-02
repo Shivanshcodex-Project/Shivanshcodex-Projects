@@ -12,34 +12,39 @@
   <!-- HUD -->
   <div class="hud">
     <div class="hudTop">
-      <div class="pill">SC • Mini City</div>
-      <div class="pill" id="area">Downtown</div>
+      <div class="pill">SC • GTA-Style</div>
+      <div class="pill" id="modePill">Mode: Touch</div>
     </div>
 
     <div class="hudTitle">Mini GTA Drive</div>
-    <div class="hudSub">Free Drive • Mini Map • Mobile Controls</div>
+    <div class="hudSub">Curved City Roads • Minimap • Hand Control</div>
+
+    <div class="hudRow">
+      <button id="enableCam" class="btn primary">Enable Camera</button>
+      <button id="toggleCam" class="btn ghost">Cam: Follow</button>
+    </div>
 
     <div class="hudRow">
       <button id="reset" class="btn ghost">Reset</button>
-      <button id="toggleCam" class="btn primary">Cam: Follow</button>
+      <button id="hideUI" class="btn ghost">Hide UI</button>
     </div>
 
     <div class="hudStats">
       <div class="stat"><span>Speed</span><b id="spd">0</b></div>
       <div class="stat"><span>Score</span><b id="scr">0</b></div>
-      <div class="stat"><span>Zone</span><b id="zn">A</b></div>
+      <div class="stat"><span>Drift</span><b id="dr">OFF</b></div>
     </div>
 
-    <div class="hint">
-      Joystick = steer • ACCEL / BRAKE = speed • Drift = hold BRAKE + steer
+    <div class="hint" id="hint">
+      Left hand = steer • Right hand open = accel • fist = brake • pinch = drift
     </div>
   </div>
 
   <!-- Minimap -->
   <canvas id="minimap"></canvas>
 
-  <!-- Touch Controls -->
-  <div class="touch">
+  <!-- Touch Controls (backup) -->
+  <div class="touch" id="touchUI">
     <div class="joy" id="joy">
       <div class="knob" id="knob"></div>
     </div>
@@ -49,7 +54,13 @@
     </div>
   </div>
 
+  <!-- three -->
   <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+
+  <!-- mediapipe hands -->
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
+
   <script src="./app.js"></script>
 </body>
 </html>
