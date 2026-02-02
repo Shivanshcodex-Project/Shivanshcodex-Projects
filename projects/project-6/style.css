@@ -1,77 +1,169 @@
-*{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
-  font-family:system-ui;
-}
-body{
-  background:#000;
-  overflow:hidden;
-  color:#fff;
+:root{
+  --bg:#040813;
+  --glass:rgba(8,16,30,.62);
+  --stroke:rgba(255,255,255,.12);
+  --txt:#e9f4ff;
+  --muted:rgba(233,244,255,.65);
+  --cyan:#00d4ff;
+  --blue:#1e88e5;
+  --red:#ff3b30;
+  --green:#34c759;
 }
 
-canvas{
-  position:fixed;
-  inset:0;
+*{
+  margin:0;padding:0;box-sizing:border-box;
+  font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;
+  color:var(--txt);
+  -webkit-tap-highlight-color: rgba(0,0,0,0);
 }
+html,body{height:100%}
+body{background:var(--bg); overflow:hidden;}
+
+canvas{position:fixed; inset:0;}
 
 .hud{
   position:fixed;
-  top:10px;
+  top:12px;
   left:50%;
   transform:translateX(-50%);
-  width:92%;
-  max-width:420px;
-  padding:14px;
-  background:rgba(0,0,0,.65);
-  border-radius:14px;
-  border:1px solid rgba(255,255,255,.15);
+  width:min(92vw, 440px);
+  padding:14px 14px 12px;
+  background:var(--glass);
+  border:1px solid var(--stroke);
+  border-radius:18px;
+  backdrop-filter: blur(12px);
+  box-shadow:0 14px 40px rgba(0,0,0,.35);
   text-align:center;
 }
 
-.title{
-  font-size:20px;
-  font-weight:700;
-}
-
-.sub{
-  font-size:12px;
-  opacity:.7;
-}
-
-.controls{
-  font-size:11px;
-  margin:6px 0;
-  opacity:.7;
-}
-
-.row{
-  display:flex;
-  gap:10px;
-  margin:10px 0;
-}
-
-button{
-  flex:1;
-  padding:10px;
-  border-radius:10px;
-  border:none;
-  background:#1e88e5;
-  color:#fff;
-  font-weight:600;
-}
-button:disabled{
-  opacity:.5;
-}
-
-.stats{
+.top{
   display:flex;
   justify-content:space-between;
+  align-items:center;
+  margin-bottom:8px;
+}
+.badge{
   font-size:12px;
+  padding:6px 10px;
+  border-radius:999px;
+  border:1px solid var(--stroke);
+  background:rgba(0,0,0,.25);
+  color:var(--muted);
+}
+.mode{
+  font-size:12px;
+  padding:6px 10px;
+  border-radius:999px;
+  border:1px solid rgba(0,212,255,.25);
+  background:rgba(0,212,255,.08);
 }
 
-#status{
+.title{font-size:22px; font-weight:900; letter-spacing:.3px}
+.sub{font-size:12px; margin-top:2px; color:var(--muted)}
+
+.row{
+  display:flex; gap:10px;
+  margin:10px 0 10px;
+}
+button{
+  border:none;
+  padding:12px 12px;
+  border-radius:14px;
+  font-weight:800;
+  cursor:pointer;
+}
+.primary{
+  flex:1;
+  background:linear-gradient(180deg, rgba(0,212,255,.35), rgba(0,0,0,.12));
+  border:1px solid rgba(0,212,255,.35);
+}
+.ghost{
+  flex:1;
+  background:rgba(255,255,255,.06);
+  border:1px solid var(--stroke);
+}
+button:disabled{opacity:.5}
+
+.stats{
+  display:grid;
+  grid-template-columns: repeat(3,1fr);
+  gap:10px;
   margin-top:6px;
+}
+.stat{
+  padding:10px 8px;
+  border-radius:14px;
+  background:rgba(255,255,255,.05);
+  border:1px solid var(--stroke);
+}
+.stat span{display:block; font-size:11px; color:var(--muted)}
+.stat b{display:block; margin-top:4px; font-size:18px}
+
+.hint{
+  margin-top:10px;
   font-size:11px;
-  opacity:.8;
+  line-height:1.35;
+  color:var(--muted);
+}
+
+.status{
+  margin-top:8px;
+  font-size:12px;
+  padding:10px 10px;
+  border-radius:14px;
+  border:1px dashed rgba(255,255,255,.18);
+  color:var(--muted);
+}
+
+.touch{
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+}
+
+.joystick{
+  pointer-events:auto;
+  position:fixed;
+  left:14px;
+  bottom:18px;
+  width:140px;
+  height:140px;
+  border-radius:24px;
+  background:rgba(255,255,255,.06);
+  border:1px solid var(--stroke);
+  backdrop-filter: blur(10px);
+}
+.joyKnob{
+  position:absolute;
+  left:50%; top:50%;
+  width:58px; height:58px;
+  transform:translate(-50%,-50%);
+  border-radius:18px;
+  background:rgba(0,212,255,.18);
+  border:1px solid rgba(0,212,255,.35);
+  box-shadow:0 10px 26px rgba(0,0,0,.35);
+}
+
+.pedals{
+  pointer-events:auto;
+  position:fixed;
+  right:14px;
+  bottom:18px;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+.pedal{
+  width:150px;
+  padding:14px 12px;
+  border-radius:18px;
+  border:1px solid var(--stroke);
+  background:rgba(255,255,255,.06);
+}
+.accel{border-color:rgba(52,199,89,.35); background:rgba(52,199,89,.08)}
+.brake{border-color:rgba(255,59,48,.35); background:rgba(255,59,48,.08)}
+
+@media (max-width:380px){
+  .joystick{width:120px;height:120px;border-radius:22px}
+  .pedal{width:130px}
 }
