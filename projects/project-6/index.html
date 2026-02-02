@@ -3,58 +3,53 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-  <title>GestureDrive 3D</title>
+  <title>Mini GTA Drive • ShivanshCodex</title>
   <link rel="stylesheet" href="./style.css" />
 </head>
 <body>
-  <canvas id="game"></canvas>
+  <canvas id="c"></canvas>
 
   <!-- HUD -->
   <div class="hud">
-    <div class="top">
-      <div class="badge">SC • GestureDrive</div>
-      <div class="mode" id="modePill">Manual</div>
+    <div class="hudTop">
+      <div class="pill">SC • Mini City</div>
+      <div class="pill" id="area">Downtown</div>
     </div>
 
-    <div class="title">GestureDrive 3D</div>
-    <div class="sub">Turns like GTA • Hand + Touch Controls</div>
+    <div class="hudTitle">Mini GTA Drive</div>
+    <div class="hudSub">Free Drive • Mini Map • Mobile Controls</div>
 
-    <div class="row">
-      <button id="startCam" class="primary">Enable Camera</button>
-      <button id="stopCam" class="ghost" disabled>Stop</button>
+    <div class="hudRow">
+      <button id="reset" class="btn ghost">Reset</button>
+      <button id="toggleCam" class="btn primary">Cam: Follow</button>
     </div>
 
-    <div class="stats">
-      <div class="stat"><span>Speed</span><b id="speed">0</b></div>
-      <div class="stat"><span>Score</span><b id="score">0</b></div>
-      <div class="stat"><span>Turn</span><b id="turn">0</b></div>
+    <div class="hudStats">
+      <div class="stat"><span>Speed</span><b id="spd">0</b></div>
+      <div class="stat"><span>Score</span><b id="scr">0</b></div>
+      <div class="stat"><span>Zone</span><b id="zn">A</b></div>
     </div>
 
-    <div class="hint" id="hint">
-      ✋ open = accelerate • ✊ fist = brake • palm move = steer <br/>
-      Touch fallback: left joystick + accel/brake buttons
+    <div class="hint">
+      Joystick = steer • ACCEL / BRAKE = speed • Drift = hold BRAKE + steer
     </div>
-
-    <div class="status" id="status">Ready</div>
   </div>
+
+  <!-- Minimap -->
+  <canvas id="minimap"></canvas>
 
   <!-- Touch Controls -->
   <div class="touch">
-    <div class="joystick" id="joy">
-      <div class="joyKnob" id="knob"></div>
+    <div class="joy" id="joy">
+      <div class="knob" id="knob"></div>
     </div>
-
     <div class="pedals">
-      <button id="accelBtn" class="pedal accel">ACCEL</button>
-      <button id="brakeBtn" class="pedal brake">BRAKE</button>
+      <button class="pedal accel" id="accel">ACCEL</button>
+      <button class="pedal brake" id="brake">BRAKE</button>
     </div>
   </div>
 
-  <!-- libs (non-module = mobile safe) -->
   <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.min.js"></script>
-
   <script src="./app.js"></script>
 </body>
 </html>
