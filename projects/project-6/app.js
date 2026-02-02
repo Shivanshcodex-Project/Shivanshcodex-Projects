@@ -1,10 +1,15 @@
+import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js";
+import { GLTFLoader } from "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/loaders/GLTFLoader.js";
+
+// ---------- UI ----------
 const canvas = document.getElementById("c");
 const video = document.getElementById("video");
+const minimap = document.getElementById("minimap");
+const mm = minimap.getContext("2d");
 
 const startBtn = document.getElementById("startBtn");
 const stopBtn  = document.getElementById("stopBtn");
 const toggleBtn = document.getElementById("toggleBtn");
-
 const hud = document.getElementById("hud");
 const toast = document.getElementById("toast");
 const errBox = document.getElementById("err");
@@ -13,487 +18,466 @@ const stateChip = document.getElementById("stateChip");
 const spdEl = document.getElementById("spd");
 const lvlEl = document.getElementById("lvl");
 const scrEl = document.getElementById("scr");
+const nitEl = document.getElementById("nit");
 
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 const lerp=(a,b,t)=>a+(b-a)*t;
-const dist=(a,b)=>Math.hypot(a.x-b.x, a.y-b.y);
 
-function showErr(e){
-  errBox.style.display = "block";
-  errBox.textContent = String(e?.stack || e);
+function setState(t){ stateChip.textContent = t; }
+function setToast(t){
+  toast.textContent=t; toast.style.opacity="0.95";
+  clearTimeout(setToast._t);
+  setToast._t=setTimeout(()=>toast.style.opacity="0.75",1600);
 }
-window.addEventListener("error", (e)=> showErr(e.error || e.message));
+function showErr(e){
+  errBox.style.display="block";
+  errBox.textContent = String(e?.stack||e);
+}
+window.addEventListener("error", (e)=> showErr(e.error||e.message));
 window.addEventListener("unhandledrejection", (e)=> showErr(e.reason));
 
-function setState(txt){ stateChip.textContent = txt; }
-function setToast(txt){
-  toast.textContent = txt;
-  toast.style.opacity = "0.95";
-  clearTimeout(setToast._t);
-  setToast._t = setTimeout(()=> toast.style.opacity="0.75", 1700);
-}
-
-toggleBtn.addEventListener("click", ()=>{
+toggleBtn.onclick=()=>{
   hud.classList.toggle("collapsed");
   toggleBtn.textContent = hud.classList.contains("collapsed") ? "Show UI" : "Hide UI";
-});
-if (window.matchMedia("(max-width: 480px)").matches){
-  hud.classList.add("collapsed");
-  toggleBtn.textContent = "Show UI";
-}
+};
 
 // ---------- THREE ----------
 const scene = new THREE.Scene();
-scene.fog = new THREE.Fog(0x061018, 10, 70);
+scene.fog = new THREE.Fog(0x061018, 12, 120);
 
-const camera = new THREE.PerspectiveCamera(60, innerWidth/innerHeight, 0.1, 250);
-camera.position.set(0, 3.8, 8.2);
-camera.lookAt(0, 1.0, 0);
+const camera = new THREE.PerspectiveCamera(62, innerWidth/innerHeight, 0.1, 500);
+camera.position.set(0, 4.2, 9.5);
 
 const renderer = new THREE.WebGLRenderer({ canvas, antialias:true, alpha:true });
 renderer.setSize(innerWidth, innerHeight);
-renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));
 
-scene.add(new THREE.HemisphereLight(0x99d9ff, 0x07101a, 1.25));
-const dl = new THREE.DirectionalLight(0xffffff, 0.85);
-dl.position.set(6, 10, 7);
+scene.add(new THREE.HemisphereLight(0x9adfff,0x07101a,1.25));
+const dl = new THREE.DirectionalLight(0xffffff,0.9);
+dl.position.set(6,12,8);
 scene.add(dl);
 
-// Road
-const road = new THREE.Mesh(
-  new THREE.PlaneGeometry(9, 240),
-  new THREE.MeshStandardMaterial({ color: 0x071624, roughness: 1, metalness: 0 })
-);
-road.rotation.x = -Math.PI/2;
-road.position.z = -95;
-scene.add(road);
+// ---------- TRACK (curved) ----------
+const TRACK_W = 8.0;
+const lanes = [-1.8, 0, 1.8]; // lane offsets
+let curve = 0;         // current curve
+let curveTarget = 0;   // where road is turning
+let roadOffset = 0;    // lateral offset accumulated
 
-// 3 lanes
-const lanes = [-1.8, 0, 1.8];
+// Road segments (recycle)
+const segs=[];
+const SEG_LEN=12;
+const SEG_COUNT=22;
 
-// lane separators
-const laneGroup = new THREE.Group();
-scene.add(laneGroup);
-for(let i=0;i<80;i++){
-  const m = new THREE.Mesh(
-    new THREE.BoxGeometry(0.1, 0.01, 1.2),
-    new THREE.MeshStandardMaterial({ color: 0x0fcfff, emissive: 0x001b24, roughness: 1 })
-  );
-  m.position.set(0, 0.01, -i*3.0);
-  laneGroup.add(m);
+function makeRoadSeg(){
+  const g = new THREE.PlaneGeometry(TRACK_W, SEG_LEN);
+  const m = new THREE.MeshStandardMaterial({ color:0x071624, roughness:1 });
+  const p = new THREE.Mesh(g,m);
+  p.rotation.x=-Math.PI/2;
+  p.position.y=0;
+  scene.add(p);
+
+  // lane lines
+  const lineMat = new THREE.MeshBasicMaterial({ color:0x00d4ff, transparent:true, opacity:0.55 });
+  const lG = new THREE.PlaneGeometry(0.15, SEG_LEN);
+  const l1 = new THREE.Mesh(lG,lineMat);
+  l1.rotation.x=-Math.PI/2; l1.position.y=0.01;
+  const l2 = l1.clone();
+  l1.position.x = -TRACK_W/6;
+  l2.position.x =  TRACK_W/6;
+  p.add(l1,l2);
+
+  return p;
+}
+for(let i=0;i<SEG_COUNT;i++){
+  const s = makeRoadSeg();
+  s.position.z = -i*SEG_LEN;
+  segs.push(s);
 }
 
-// neon rails
-function rail(x){
-  const r = new THREE.Mesh(
-    new THREE.BoxGeometry(0.14, 0.06, 240),
-    new THREE.MeshStandardMaterial({ color: 0x0aaad1, emissive: 0x012b3a, roughness: 1 })
-  );
-  r.position.set(x, 0.03, -95);
-  return r;
-}
-scene.add(rail(-2.55));
-scene.add(rail( 2.55));
+// Rails
+const railMat = new THREE.MeshStandardMaterial({ color:0x0aaad1, emissive:0x012b3a, roughness:1 });
+const leftRail = new THREE.Mesh(new THREE.BoxGeometry(0.18,0.08,SEG_COUNT*SEG_LEN), railMat);
+leftRail.position.set(-TRACK_W/2-0.2,0.04,-(SEG_COUNT*SEG_LEN)/2);
+scene.add(leftRail);
+const rightRail = leftRail.clone();
+rightRail.position.x = TRACK_W/2+0.2;
+scene.add(rightRail);
 
-// ---------- PLAYER CAR (GLB) ----------
-let car = new THREE.Group();
+// ---------- PLAYER CAR (always visible) ----------
+const car = new THREE.Group();
 scene.add(car);
+car.position.set(0,0,4.0);
 
-let carModel = null;
-let neon = null;
-
-function addFallbackCar(){
-  // fallback box car (if glb fails)
+function buildFallbackCar(){
   const body = new THREE.Mesh(
-    new THREE.BoxGeometry(0.9, 0.35, 1.7),
-    new THREE.MeshStandardMaterial({ color: 0x0b1d2b, roughness: 0.35, metalness: 0.25 })
+    new THREE.BoxGeometry(1.05, 0.38, 2.0),
+    new THREE.MeshStandardMaterial({ color:0x0b1d2b, roughness:0.35, metalness:0.3 })
   );
-  body.position.y = 0.35;
-  car.add(body);
+  body.position.y=0.35;
+
+  const top = new THREE.Mesh(
+    new THREE.BoxGeometry(0.75, 0.25, 0.9),
+    new THREE.MeshStandardMaterial({ color:0x071624, roughness:0.35, metalness:0.15 })
+  );
+  top.position.set(0,0.58,-0.1);
+
+  const neon = new THREE.Mesh(
+    new THREE.RingGeometry(0.95, 1.32, 48),
+    new THREE.MeshBasicMaterial({ color:0x00d4ff, transparent:true, opacity:0.20 })
+  );
+  neon.rotation.x=-Math.PI/2;
+  neon.position.y=0.021;
+
+  car.add(body, top, neon);
+  return neon;
 }
 
-function addNeon(){
-  const glow = new THREE.Mesh(
-    new THREE.PlaneGeometry(1.4, 2.2),
-    new THREE.MeshBasicMaterial({ color: 0x00d4ff, transparent:true, opacity:0.18 })
-  );
-  glow.rotation.x = -Math.PI/2;
-  glow.position.y = 0.02;
-  car.add(glow);
+let neon = buildFallbackCar();
 
-  const ring = new THREE.Mesh(
-    new THREE.RingGeometry(0.9, 1.25, 44),
-    new THREE.MeshBasicMaterial({ color: 0x00d4ff, transparent:true, opacity:0.18 })
-  );
-  ring.rotation.x = -Math.PI/2;
-  ring.position.y = 0.021;
-  ring.position.z = -0.2;
-  car.add(ring);
-
-  neon = glow;
-}
-
-car.position.set(0, 0, 2.2);
-
-// Load GLB (ROOT PATH ✅)
+// GLB load (optional)
 try{
-  const gltfLoader = new THREE.GLTFLoader();
-  gltfLoader.load(
-    "./car.glb",
-    (gltf)=>{
-      carModel = gltf.scene;
-      carModel.scale.set(1.25, 1.25, 1.25);
-      carModel.position.y = 0.02;
-      car.add(carModel);
-      setToast("Car model loaded ✅");
-    },
-    undefined,
-    (e)=>{
-      addFallbackCar();
-      setToast("GLB failed → fallback car");
-      showErr(e);
-    }
-  );
+  const gltf = new GLTFLoader();
+  gltf.load("./car.glb", (g)=>{
+    car.clear();
+    const model = g.scene;
+    model.scale.set(1.35,1.35,1.35);
+    model.position.y=0.02;
+    car.add(model);
+    neon = buildFallbackCar(); // keep neon even on model
+    setToast("Car GLB loaded ✅");
+  }, undefined, (e)=>{
+    setToast("GLB failed → fallback car");
+  });
 }catch(e){
-  addFallbackCar();
-  showErr(e);
+  // fallback already exists
 }
-addNeon();
 
-// ---------- TRAFFIC AI ----------
-const traffic = [];
-const trafficMat = new THREE.MeshStandardMaterial({ color: 0x2b0b1f, emissive: 0x12040a, roughness: 0.9 });
-
+// ---------- TRAFFIC ----------
+const traffic=[];
+const tMat = new THREE.MeshStandardMaterial({ color:0x3c0d22, emissive:0x12040a, roughness:0.95 });
 function spawnTraffic(z){
-  const t = new THREE.Mesh(new THREE.BoxGeometry(1.0, 0.55, 2.0), trafficMat);
-  t.position.set(lanes[Math.floor(Math.random()*3)], 0.28, z);
+  const t = new THREE.Mesh(new THREE.BoxGeometry(1.0,0.55,2.0), tMat);
+  t.position.set(lanes[Math.floor(Math.random()*3)],0.28,z);
   scene.add(t);
   traffic.push(t);
 }
-for(let i=0;i<7;i++) spawnTraffic(-12 - i*12);
+for(let i=0;i<9;i++) spawnTraffic(-20 - i*10);
 
-// ---------- AUDIO (root paths ✅) ----------
-const audio = {
-  engine: new Audio("./engine.mp3"),
-  drift:  new Audio("./drift.mp3"),
-  crash:  new Audio("./crash.mp3")
-};
-audio.engine.loop = true;
-audio.engine.volume = 0.45;
-audio.drift.loop = true;
-audio.drift.volume = 0.30;
-audio.crash.volume = 0.90;
+// ---------- AUDIO (optional) ----------
+const engine = new Audio("./engine.mp3"); engine.loop=true; engine.volume=0.45;
+const driftS = new Audio("./drift.mp3");  driftS.loop=true; driftS.volume=0.3;
+const crashS = new Audio("./crash.mp3");  crashS.volume=0.9;
+const tryPlay=(a)=>{ try{ a.currentTime=0; const p=a.play(); p?.catch?.(()=>{});}catch{} };
 
-function tryPlay(a){
-  a.currentTime = 0;
-  const p = a.play();
-  if(p && p.catch) p.catch(()=>{ /* user gesture required */ });
-}
+// ---------- GAME ----------
+let running=false;
+let speed=0, targetSpeed=0;
+let score=0, level=1;
+let steer=0, steerTarget=0;
+let driftOn=false;
+let nitro=100, nitroOn=false;
+let lastHandsAt=0;
 
-// ---------- GAME STATE ----------
-let running = false;
-let gameOver = false;
-
-let speed = 0;
-let targetSpeed = 0;
-let score = 0;
-let level = 1;
-
-let steerTarget = 0;
-let steer = 0;
-
-let driftOn = false;
-let driftStrength = 0;
-
-const laneLimit = 1.8;
+// Better camera
+let camX=0, camZ=9.5;
 
 // ---------- HAND TRACKING ----------
-let hands = null;
-let stream = null;
-let rafId = null;
-
-function palmSize(hand){
-  return dist(hand[0], hand[9]) + 1e-6;
-}
-function isOpenPalm(hand, size){
-  const idx = hand[8].y < hand[6].y;
-  const mid = hand[12].y < hand[10].y;
-  const ring = hand[16].y < hand[14].y;
-  const pin = hand[20].y < hand[18].y;
-  return [idx,mid,ring,pin].filter(Boolean).length >= 3;
-}
-function isFist(hand){
-  const palm = hand[9];
-  const tips = [8,12,16,20];
-  const avg = tips.reduce((s,i)=> s + dist(hand[i], palm), 0) / tips.length;
-  return avg < 0.18; // normalized-ish on mediapipe coords
-}
-function isPinch(hand, size){
-  const d = Math.hypot(hand[4].x - hand[8].x, hand[4].y - hand[8].y);
-  return d < size * 0.45; // mobile-friendly threshold
-}
+let hands=null, stream=null, camUtil=null;
 
 function setupHands(){
-  hands = new Hands({ locateFile:(f)=>`https://cdn.jsdelivr.net/npm/@mediapipe/hands/${f}` });
-  hands.setOptions({
-    maxNumHands: 2,
-    modelComplexity: 1,
-    minDetectionConfidence: 0.7,
-    minTrackingConfidence: 0.7
-  });
+  hands = new Hands({ locateFile:(f)=>`https://cdn.jsdelivr.net/npm/@mediapipe/hands/${f}`});
+  hands.setOptions({maxNumHands:2, modelComplexity:1, minDetectionConfidence:0.7, minTrackingConfidence:0.7});
   hands.onResults(onHands);
 }
-
-let lastHandsAt = 0;
+function palmSize(h){
+  const a=h[0], b=h[9];
+  return Math.hypot(a.x-b.x, a.y-b.y)+1e-6;
+}
+function isOpenPalm(h, size){
+  const up = (tip,pip)=> h[tip].y < h[pip].y;
+  const cnt = [up(8,6),up(12,10),up(16,14),up(20,18)].filter(Boolean).length;
+  return cnt>=3;
+}
+function isFist(h){
+  const palm=h[9];
+  const tips=[8,12,16,20];
+  const avg=tips.reduce((s,i)=> s + Math.hypot(h[i].x-palm.x, h[i].y-palm.y), 0)/tips.length;
+  return avg < 0.18;
+}
+function isPinch(h, size){
+  const d = Math.hypot(h[4].x-h[8].x, h[4].y-h[8].y);
+  return d < size * 0.45;
+}
+function isThumbUp(h){
+  // simple thumb-up detection (nitro)
+  return h[4].y < h[3].y && h[3].y < h[2].y;
+}
 
 function onHands(res){
   if(!res?.multiHandLandmarks?.length){
     steerTarget *= 0.94;
-    targetSpeed = lerp(targetSpeed, 0, 0.04);
-    driftOn = false;
+    targetSpeed = lerp(targetSpeed, 8 + level*1.0, 0.04);
+    driftOn=false; nitroOn=false;
     return;
   }
 
   lastHandsAt = performance.now();
 
-  // We’ll use: Left hand = steer, Right hand = speed/drift
   const lm = res.multiHandLandmarks;
   const hd = res.multiHandedness || [];
-
-  let left = null, right = null;
+  let left=null, right=null;
 
   for(let i=0;i<lm.length;i++){
-    const label = hd[i]?.label; // "Left"/"Right"
-    if(label === "Left") left = lm[i];
-    if(label === "Right") right = lm[i];
+    const label = hd[i]?.label;
+    if(label==="Left") left=lm[i];
+    if(label==="Right") right=lm[i];
   }
   if(!left) left = lm[0];
-  if(!right && lm.length > 1) right = lm[1];
+  if(!right && lm.length>1) right=lm[1];
 
   if(left){
     const palm = left[9];
-    steerTarget = clamp((palm.x - 0.5) * 2.3, -1, 1);
+    steerTarget = clamp((palm.x-0.5)*2.4, -1, 1);
   }
 
   if(right){
     const size = palmSize(right);
-    const open = isOpenPalm(right, size);
+    const open = isOpenPalm(right,size);
     const fist = isFist(right);
-    const pinch = isPinch(right, size);
+    const pinch = isPinch(right,size);
+    const thumb = isThumbUp(right);
 
-    // speed logic
-    if(open){
-      targetSpeed = 18 + level * 2.2; // level boosts speed
-      setState("Accelerating ✋");
-    } else if(fist){
-      targetSpeed = 0;
-      setState("Braking ✊");
-    } else {
-      targetSpeed = lerp(targetSpeed, (10 + level*1.2), 0.06);
-      setState("Cruise");
-    }
+    if(open){ targetSpeed = 20 + level*2.2; setState("Accelerating ✋"); }
+    else if(fist){ targetSpeed = 0; setState("Braking ✊"); }
+    else { targetSpeed = lerp(targetSpeed, 12 + level*1.2, 0.06); setState("Cruise"); }
 
-    // drift hold
     driftOn = pinch;
+    nitroOn = thumb;
   }
 }
 
-// ---------- CAMERA START/STOP ----------
-async function startCamera(){
+// ---------- START / STOP ----------
+startBtn.onclick = async()=>{
   try{
     if(!hands) setupHands();
-
     setState("Requesting camera…");
-    stream = await navigator.mediaDevices.getUserMedia({
-      video: { facingMode:"user", width:{ideal:640}, height:{ideal:480} },
-      audio:false
-    });
 
+    stream = await navigator.mediaDevices.getUserMedia({
+      video:{ facingMode:"user", width:{ideal:640}, height:{ideal:480} }, audio:false
+    });
     video.srcObject = stream;
     await video.play();
 
-    running = true;
-    startBtn.disabled = true;
-    stopBtn.disabled = false;
+    camUtil = new Camera(video,{ onFrame: async()=>{ await hands.send({image:video}); }});
+    camUtil.start();
 
-    // audio must start from user click ✅
-    tryPlay(audio.engine);
+    running=true;
+    startBtn.disabled=true;
+    stopBtn.disabled=false;
 
-    const loop = async()=>{
-      if(!running) return;
-      try { await hands.send({ image: video }); } catch(e){}
-      rafId = requestAnimationFrame(loop);
-    };
-    loop();
-
-    setState("Camera ON ✅");
-    setToast("Show hands to drive 🚗");
-  } catch(e){
-    setState("Camera blocked/denied");
+    tryPlay(engine);
+    setState("Running ✅");
+    setToast("Drive with hands 🚗");
+  }catch(e){
+    setState("Camera blocked");
     setToast("Chrome → Site settings → Camera → Allow");
     showErr(e);
   }
-}
+};
 
-function stopCamera(){
-  running = false;
-  startBtn.disabled = false;
-  stopBtn.disabled = true;
+stopBtn.onclick=()=>{
+  running=false;
+  startBtn.disabled=false;
+  stopBtn.disabled=true;
 
-  if(rafId) cancelAnimationFrame(rafId);
-  rafId = null;
+  camUtil?.stop?.();
+  stream?.getTracks?.().forEach(t=>t.stop());
+  video.srcObject=null;
 
-  if(stream){
-    stream.getTracks().forEach(t=>t.stop());
-    stream = null;
-  }
-  video.srcObject = null;
-
-  audio.engine.pause();
-  audio.drift.pause();
-
-  setState("Camera OFF");
+  engine.pause(); driftS.pause();
+  setState("Stopped");
   setToast("Stopped");
-}
+};
 
-startBtn.addEventListener("click", startCamera);
-stopBtn.addEventListener("click", stopCamera);
-
-// ---------- GAME LOOP ----------
-let lastT = performance.now();
-
-function resetGame(){
-  gameOver = false;
-  score = 0;
-  level = 1;
-  speed = 0;
-  targetSpeed = 0;
-  steer = 0;
-  car.position.x = 0;
-
-  traffic.forEach((t, idx)=>{
-    t.position.z = -12 - idx*12;
-    t.position.x = lanes[Math.floor(Math.random()*3)];
-  });
-
-  setToast("Go! ✋ accelerate");
-}
-
-function collide(){
+// ---------- COLLISION ----------
+function hitTraffic(){
   for(const t of traffic){
     const dz = Math.abs(t.position.z - car.position.z);
     const dx = Math.abs(t.position.x - car.position.x);
-    if(dz < 1.3 && dx < 0.9) return true;
+    if(dz < 1.25 && dx < 0.95) return true;
   }
   return false;
 }
 
+// ---------- MINIMAP ----------
+function drawMinimap(){
+  const w=minimap.width = minimap.clientWidth * devicePixelRatio;
+  const h=minimap.height = minimap.clientHeight * devicePixelRatio;
+
+  mm.clearRect(0,0,w,h);
+  mm.fillStyle="rgba(0,0,0,0.22)";
+  mm.fillRect(0,0,w,h);
+
+  // road
+  mm.strokeStyle="rgba(0,212,255,0.7)";
+  mm.lineWidth=2*devicePixelRatio;
+  mm.strokeRect(w*0.18,h*0.12,w*0.64,h*0.76);
+
+  // player
+  mm.fillStyle="rgba(0,212,255,0.9)";
+  mm.fillRect(w*0.49,h*0.72,w*0.02,h*0.06);
+
+  // traffic dots
+  mm.fillStyle="rgba(255,80,130,0.85)";
+  traffic.forEach(t=>{
+    const nz = clamp((-t.position.z)/120, 0, 1);
+    const lx = (t.position.x/ (TRACK_W/2)) * 0.32;
+    mm.fillRect(w*(0.5+lx)-3, h*(0.12 + nz*0.76)-3, 6, 6);
+  });
+}
+
+// ---------- LOOP ----------
+let gameOver=false;
+function crash(){
+  gameOver=true;
+  targetSpeed=0;
+  engine.pause(); driftS.pause();
+  tryPlay(crashS);
+  setState("CRASH 💥 Tap to restart");
+  setToast("Crash! Tap to restart");
+}
+
+function reset(){
+  gameOver=false;
+  score=0; level=1; nitro=100;
+  speed=0; targetSpeed=0;
+  steer=0; steerTarget=0;
+  roadOffset=0; curve=0; curveTarget=0;
+  traffic.forEach((t,i)=>{
+    t.position.z = -20 - i*10;
+    t.position.x = lanes[Math.floor(Math.random()*3)];
+  });
+  tryPlay(engine);
+  setState("Running ✅");
+  setToast("Go! ✋ accelerate");
+}
+
+window.addEventListener("pointerdown", ()=>{
+  if(gameOver) reset();
+});
+
+let lastT=performance.now();
 function animate(){
   requestAnimationFrame(animate);
-  const now = performance.now();
-  const dt = clamp((now - lastT)/1000, 0, 0.035);
-  lastT = now;
+  const now=performance.now();
+  const dt=clamp((now-lastT)/1000, 0, 0.033);
+  lastT=now;
 
-  // smooth steer
-  steer = lerp(steer, steerTarget, 0.12);
-
-  // drift
-  driftStrength = lerp(driftStrength, driftOn ? 1 : 0, 0.10);
-
-  // speed
-  speed = lerp(speed, targetSpeed, 0.08);
-
-  // apply drift handling: wider slide
-  let xTarget = steer * laneLimit;
-  if(driftStrength > 0.2){
-    xTarget += steer * 0.45; // extra slide feel
-    if(audio.drift.paused) tryPlay(audio.drift);
-  } else {
-    audio.drift.pause();
+  // curve change over time (map turns)
+  if(!gameOver){
+    if(Math.random() < 0.01) curveTarget = (Math.random()*2-1) * 0.8; // random turn
+    curve = lerp(curve, curveTarget, 0.01);
+    roadOffset += curve * speed * dt * 0.22;
+    roadOffset = clamp(roadOffset, -1.6, 1.6);
   }
 
-  car.position.x = lerp(car.position.x, xTarget, 0.16);
-  car.position.x = clamp(car.position.x, -2.1, 2.1);
+  // smooth steering
+  steer = lerp(steer, steerTarget, 0.12);
 
-  // tilt
-  car.rotation.z = lerp(car.rotation.z, (-steer * 0.18) - (steer * 0.22 * driftStrength), 0.12);
+  // speed + nitro
+  let nitroBoost = 0;
+  if(nitroOn && nitro>0 && !gameOver){
+    nitroBoost = 10;
+    nitro = Math.max(0, nitro - 30*dt);
+  }else{
+    nitro = Math.min(100, nitro + 12*dt);
+  }
 
-  // neon intensity
-  if(neon) neon.material.opacity = 0.14 + 0.10 * driftStrength;
+  if(!gameOver){
+    speed = lerp(speed, targetSpeed + nitroBoost, 0.08);
+  }else{
+    speed = lerp(speed, 0, 0.08);
+  }
 
-  // move lane marks
-  laneGroup.children.forEach(line=>{
-    line.position.z += speed * dt * 2.4;
-    if(line.position.z > 6) line.position.z = -230;
+  // drift (pinch hold)
+  const driftStrength = driftOn ? 1 : 0;
+  if(driftStrength>0.2){
+    if(driftS.paused) tryPlay(driftS);
+  }else{
+    driftS.pause();
+  }
+
+  // player position: steering + road curve offset
+  const xTarget = steer*2.05 + roadOffset*1.4 + (driftOn ? steer*0.55 : 0);
+  car.position.x = lerp(car.position.x, clamp(xTarget, -2.3, 2.3), 0.16);
+  car.rotation.z = lerp(car.rotation.z, -steer*0.22 - (driftOn ? steer*0.28 : 0), 0.12);
+
+  // camera follow (more game feel)
+  camX = lerp(camX, car.position.x*0.14 + roadOffset*0.35, 0.06);
+  camera.position.x = camX;
+  camera.position.y = lerp(camera.position.y, 4.2, 0.03);
+  camZ = lerp(camZ, 9.5, 0.03);
+  camera.position.z = camZ;
+  camera.lookAt(car.position.x*0.12, 1.2, -6);
+
+  // move road segments forward and apply curve offset
+  segs.forEach(s=>{
+    s.position.z += speed*dt*2.7;
+    if(s.position.z > 8){
+      s.position.z -= SEG_COUNT*SEG_LEN;
+    }
+    s.position.x = roadOffset; // road turning feel
   });
+  leftRail.position.x = -TRACK_W/2-0.2 + roadOffset;
+  rightRail.position.x = TRACK_W/2+0.2 + roadOffset;
 
-  // traffic AI (more speed + more density with level)
+  // traffic AI
   if(!gameOver){
     traffic.forEach(t=>{
-      t.position.z += speed * dt * (2.6 + level*0.05);
-      if(t.position.z > 7){
-        t.position.z = - (50 + Math.random()*70);
-        // basic AI: avoid player lane sometimes
-        const avoid = Math.random() < 0.35;
+      t.position.z += speed*dt*2.7;
+      t.position.x += (roadOffset - t.position.x)*0.02; // follow curve slightly
+
+      if(t.position.z > 10){
+        t.position.z = -(40 + Math.random()*80);
+        const avoid = Math.random()<0.35;
         const lane = avoid ? (car.position.x < 0 ? 2 : 0) : Math.floor(Math.random()*3);
-        t.position.x = lanes[lane];
-        score += 8;
+        t.position.x = lanes[lane] + roadOffset;
+        score += 10;
       }
     });
 
-    // levels
-    if(score > level * 160){
+    // level up
+    if(score > level*220){
       level++;
-      setToast(`Level Up 🔥 (${level})`);
+      setToast(`Level Up 🔥 ${level}`);
     }
 
     // collision
-    if(collide()){
-      gameOver = true;
-      targetSpeed = 0;
-      audio.engine.pause();
-      audio.drift.pause();
-      tryPlay(audio.crash);
-      setState("CRASH 💥 Tap to restart");
-      setToast("Crash! Tap screen to restart");
-    }
-  } else {
-    targetSpeed = 0;
+    if(hitTraffic()) crash();
   }
 
   // UI
   spdEl.textContent = String(Math.round(speed));
   lvlEl.textContent = String(level);
   scrEl.textContent = String(score);
+  nitEl.textContent = String(Math.round(nitro));
 
   // hint if no hands
-  if(startBtn.disabled && (now - lastHandsAt) > 1200){
+  if(startBtn.disabled && (now-lastHandsAt)>1200 && !gameOver){
     setState("No hands detected 👋");
   }
 
-  // camera follow
-  camera.position.x = lerp(camera.position.x, car.position.x * 0.12, 0.08);
-
+  drawMinimap();
   renderer.render(scene, camera);
 }
 animate();
 
-addEventListener("pointerdown", ()=>{
-  if(gameOver){
-    resetGame();
-    // restart engine after user click
-    tryPlay(audio.engine);
-    setState("Running ✅");
-  }
-});
-
-// resize
 addEventListener("resize", ()=>{
   camera.aspect = innerWidth/innerHeight;
   camera.updateProjectionMatrix();
   renderer.setSize(innerWidth, innerHeight);
 });
 
-// init
 setState("Ready");
 setToast("Enable Camera to start");
