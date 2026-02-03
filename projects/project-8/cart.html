@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Cart</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<h1>🛒 Your Cart</h1>
+
+<div id="cartItems" style="padding:14px;display:grid;gap:12px;"></div>
+<h2 id="total">Total Amount: ₹0</h2>
+
+<a class="btn" id="payBtn" href="payment.html">💳 Proceed to Payment</a>
+<a class="btn" id="payBtn" href="shop.html" style="background:#999;">⬅️ Back to Shop</a>
+
+<script src="js/products.js"></script>
+<script src="js/cart.js"></script>
+
+<script>
+  const box = document.getElementById("cartItems");
+  const cart = getCart();
+  let sum = 0;
+
+  if(cart.length === 0){
+    box.innerHTML = `<div class="card"><h3>Cart is empty</h3><p class="small">Shop se product add karo.</p></div>`;
+    document.getElementById("payBtn").style.display = "none";
+  } else {
+    cart.forEach((item, i) => {
+      sum += Number(item.price || 0);
+      box.innerHTML += `
+        <div class="card">
+          <img src="images/${item.folder}/1.jpg" alt="${item.name}">
+          <h3>${item.name}</h3>
+          <p>₹${item.price}</p>
+          <button onclick="removeCartItem(${i})" style="background:#ff4d4d;">❌ Remove</button>
+        </div>
+      `;
+    });
+  }
+
+  document.getElementById("total").innerText = "Total Amount: ₹" + sum;
+</script>
+
+</body>
+</html>
