@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Payment</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<h1>💳 Payment</h1>
+
+<div class="card" style="max-width:520px;margin:12px auto;">
+  <h3 style="text-align:center;margin-top:6px;">Order Summary</h3>
+  <p id="bill">Total: ₹0</p>
+  <div id="items" style="padding:10px;display:grid;gap:10px;"></div>
+</div>
+
+<div class="card" style="max-width:520px;margin:12px auto;">
+  <h3 style="text-align:center;margin-top:6px;">Pay via UPI</h3>
+
+  <img id="qr" alt="UPI QR" />
+  <a id="payBtn" href="#">Pay</a>
+  <a id="whatsappBtn" href="#" target="_blank">📞 WhatsApp: Payment Done</a>
+
+  <p class="small">Payment ke baad screenshot WhatsApp pe bhej dena ✅</p>
+</div>
+
+<div class="card" style="max-width:520px;margin:12px auto;">
+  <h3 style="text-align:center;margin-top:6px;">Delivery Details</h3>
+
+  <input id="name" placeholder="Full Name" />
+  <input id="phone" placeholder="Phone Number" />
+  <input id="address" placeholder="Full Address (House/Street/Area)" />
+  <input id="city" placeholder="City (Example: Delhi)" />
+  <input id="landmark" placeholder="Landmark (Example: Sarojini Nagar)" />
+
+  <button onclick="placeOrder()">✅ Place Order</button>
+
+  <p id="orderBox" style="text-align:center;font-weight:900;margin:10px 0;"></p>
+  <a class="btn" id="payBtn" href="track.html" style="background:#673ab7;display:none;">📦 Track Order</a>
+
+  <a class="btn" id="payBtn" href="cart.html" style="background:#999;">⬅️ Back to Cart</a>
+</div>
+
+<script>
+  // ===== FIXED SETTINGS =====
+  const UPI_ID = "priyanshuclothing@fam";
+  const WHATSAPP_NUMBER = "584268849301"; // without +
+
+  // ===== CART LOAD =====
+  const cart = JSON.parse(localStorage.getItem("cart")) || [];
+  const itemsDiv = document.getElementById("items");
+  const billEl = document.getElementById("bill");
+
+  if(cart.length === 0){
+    itemsDiv.innerHTML = `<p class="small">Cart empty hai. Pahle shop se product add karo.</p>`;
+    document.getElementById("payBtn").style.display = "none";
+    document.getElementById("whatsappBtn").style.display = "none";
+  }
+
+  let total = 0;
+  cart.forEach(p => {
+    total += Number(p.price || 0);
+    itemsDiv.innerHTML += `
+      <div style="display:flex;gap:10px;align-items:center;">
+        <img src="images/${p.folder}/1.jpg" style="width:64px;height:64px;object-fit:cover;border-radius:10px;">
+        <div style="flex:1;">
+          <div style="font-weight:900;">${p.name}</div>
+          <div style="color:#444;font-weight:800;">₹${p.price}</div>
+        </div>
+      </div>
+    `;
+  });
+
+  billEl.textContent = `Total: ₹${total}`;
+
+  // ===== UPI LINK + QR =====
+  const upiLink = `upi://pay?pa=${encodeURIComponent(UPI_ID)}&am=${encodeURIComponent(total)}&cu=INR`;
+  const qrURL = `https://api.qrserver.com/v1/create-qr-code/?size=320x320&data=${encodeURIComponent(upiLink)}`;
+  document.getElementById("qr").src = qrURL;
+
+  const payBtn = document.querySelectorAll("#payBtn")[0];
+  payBtn.textContent = `Pay ₹${total}`;
+  payBtn.href = upiLink;
+
+  // ===== WhatsApp message (default) =====
+  function setWhatsAppMessage(text){
+    document.getElementById("whatsappBtn").href =
+      `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(text)}`;
+  }
+  setWhatsAppMessage(`Maine ₹${total} ka payment kar diya hai. Screenshot bhej raha hun ✅`);
+
+  // ===== Order Save =====
+  function generateOrderId(){
+    return "ORD" + Math.floor(10000000 + Math.random()*90000000);
+  }
+
+  function placeOrder(){
+    if(cart.length === 0) return alert("Cart empty hai!");
+
+    const name = document.getElementById("name").value.trim();
+    const phone = document.getElementById("phone").value.trim();
+    const address = document.getElementById("address").value.trim();
+    const city = document.getElementById("city").value.trim();
+    const landmark = document.getElementById("landmark").value.trim();
+
+    if(!name || !phone || !address || !city || !landmark){
+      return alert("Bhai sab details fill kar de 🙂");
+    }
+
+    const orderId = generateOrderId();
+    const orders = JSON.parse(localStorage.getItem("orders")) || {};
+
+    orders[orderId] = {
+      orderId,
+      name,
+      phone,
+      address,
+      city,
+      landmark,
+      total,
+      items: cart,
+      createdAt: Date.now(),
+      etaDays: 8
+    };
+
+    localStorage.setItem("orders", JSON.stringify(orders));
+    localStorage.setItem("lastOrderId", orderId);
+
+    // Clear cart after placing order
+    localStorage.removeItem("cart");
+
+    document.getElementById("orderBox").innerHTML =
+      `✅ Order Placed!<br>Order ID: <span style="color:#1e90ff;">${orderId}</span>`;
+
+    // WhatsApp msg with full details
+    const msg =
+`Order ID: ${orderId}
+Maine ₹${total} ka payment kar diya hai ✅
+Screenshot bhej raha hun.
+Name: ${name}
+Phone: ${phone}
+Address: ${address}, ${landmark}, ${city}`;
+
+    setWhatsAppMessage(msg);
+
+    // Show track button
+    document.querySelectorAll('a[href="track.html"]')[0].style.display = "block";
+
+    alert("✅ Order placed! Ab payment screenshot WhatsApp pe bhej do.");
+  }
+
+  window.placeOrder = placeOrder;
+</script>
+
+</body>
+</html>
