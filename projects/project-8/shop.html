@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Shop</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<h1>🛍️ Shop</h1>
+
+<div id="shop"></div>
+
+<a class="btn" id="payBtn" href="cart.html" style="background:#ff9800;">🛒 Go to Cart</a>
+<a class="btn" id="payBtn" href="index.html" style="background:#999;">⬅️ Home</a>
+
+<script src="js/products.js"></script>
+<script src="js/cart.js"></script>
+<script>
+  const shop = document.getElementById("shop");
+
+  products.forEach(p => {
+    shop.innerHTML += `
+      <div class="card">
+        <img src="images/${p.folder}/1.jpg" alt="${p.name}">
+        <h3>${p.name}</h3>
+        <p>₹${p.price}</p>
+        <button onclick="addToCart('${p.id}')">Add to Cart</button>
+      </div>
+    `;
+  });
+</script>
+
+</body>
+</html>
