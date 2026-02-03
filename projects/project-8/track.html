@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Track Order</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<h1>📦 Track Order</h1>
+
+<div class="card" style="max-width:520px;margin:12px auto;">
+  <h3 style="text-align:center;margin-top:6px;">Enter Order ID</h3>
+  <input id="oid" placeholder="Example: ORD12345678" />
+  <button onclick="trackOrder()">Track</button>
+  <p class="small">Payment ke baad jo Order ID mila tha wahi daalo.</p>
+</div>
+
+<div id="result"></div>
+
+<a class="btn" id="payBtn" href="shop.html" style="background:#999;">⬅️ Back to Shop</a>
+
+<script src="js/track.js"></script>
+<script>
+  const last = localStorage.getItem("lastOrderId");
+  if(last) document.getElementById("oid").value = last;
+</script>
+
+</body>
+</html>
