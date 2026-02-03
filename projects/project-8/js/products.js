@@ -1,0 +1,23 @@
+const products = [
+  { id:"P1001", name:"Oversized Hoodie", price:1299, folder:"product1" },
+  { id:"P1002", name:"Street T-Shirt",     price:799,  folder:"product2" },
+  { id:"P1003", name:"Cargo Pant",        price:1499, folder:"product3" },
+  { id:"P1004", name:"Denim Jacket",      price:1799, folder:"product4" },
+  { id:"P1005", name:"Sweatshirt",        price:999,  folder:"product5" },
+  { id:"P1006", name:"Track Pants",       price:899,  folder:"product6" },
+  { id:"P1007", name:"Printed Shirt",     price:699,  folder:"product7" },
+  { id:"P1008", name:"Casual Jeans",      price:1199, folder:"product8" },
+  { id:"P1009", name:"Formal Shirt",      price:999,  folder:"product9" },
+  { id:"P1010", name:"Sneaker Combo",     price:1999, folder:"product10" },
+
+  { id:"P1011", name:"Black Tee",         price:599,  folder:"product11" },
+  { id:"P1012", name:"White Tee",         price:599,  folder:"product12" },
+  { id:"P1013", name:"Joggers",           price:899,  folder:"product13" },
+  { id:"P1014", name:"Summer Shorts",     price:649,  folder:"product14" },
+  { id:"P1015", name:"Polo T-Shirt",      price:749,  folder:"product15" },
+  { id:"P1016", name:"Kurta Shirt",       price:1099, folder:"product16" },
+  { id:"P1017", name:"Leather Belt",      price:399,  folder:"product17" },
+  { id:"P1018", name:"Cap",               price:299,  folder:"product18" },
+  { id:"P1019", name:"Winter Combo",      price:2299, folder:"product19" },
+  { id:"P1020", name:"Classic Shirt",     price:899,  folder:"product20" },
+];
