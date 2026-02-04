@@ -20,17 +20,16 @@
       <div class="logoDot"></div>
       <div>
         <div style="font-weight:1100">PAYMENT</div>
-        <div style="font-size:12px;color:#777;font-weight:800;margin-top:-2px">UPI QR + WhatsApp Confirm</div>
+        <div style="font-size:12px;color:#777;font-weight:900;margin-top:-2px">UPI QR + WhatsApp Confirm</div>
       </div>
     </div>
 
     <div class="rightIcons">
-      <a class="iconBtn" href="cart.html" aria-label="Cart">🛒</a>
+      <button class="iconBtn" onclick="openMiniCart()" aria-label="Cart">🛒</button>
     </div>
   </div>
 </header>
 
-<!-- Drawer -->
 <div id="drawerRoot">
   <div class="drawerOverlay" onclick="closeDrawer()"></div>
   <aside class="drawer">
@@ -63,7 +62,7 @@
   <a class="btn btnPrimary" id="payBtn" href="#">Pay</a>
   <a class="btn btnSoft" id="whatsappBtn" href="#" target="_blank">📞 WhatsApp: Payment Done</a>
 
-  <p class="small">Payment ke baad screenshot WhatsApp pe bhej dena ✅</p>
+  <p class="muted center">Payment ke baad screenshot WhatsApp pe bhej dena ✅</p>
 </div>
 
 <div class="panel">
@@ -84,12 +83,13 @@
   <a class="btn btnSoft" href="cart.html">⬅️ Back to Cart</a>
 </div>
 
+<script src="js/ui.js"></script>
 <script>
   function openDrawer(){ document.body.classList.add("drawerOpen"); }
   function closeDrawer(){ document.body.classList.remove("drawerOpen"); }
 
   const UPI_ID = "priyanshuclothing@fam";
-  const WHATSAPP_NUMBER = "584268849301"; // without +
+  const WHATSAPP_NUMBER = "584268849301";
 
   const cart = JSON.parse(localStorage.getItem("cart")) || [];
   const itemsDiv = document.getElementById("items");
@@ -135,7 +135,6 @@
     document.getElementById("whatsappBtn").href =
       `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(text)}`;
   }
-
   setWhatsApp(`Maine ₹${total} ka payment kar diya hai. Screenshot bhej raha hun ✅`);
 
   function generateOrderId(){
@@ -143,7 +142,7 @@
   }
 
   function placeOrder(){
-    if(cart.length === 0) return alert("Cart empty hai!");
+    if(cart.length === 0) return toast("Cart empty");
 
     const name = document.getElementById("name").value.trim();
     const phone = document.getElementById("phone").value.trim();
@@ -152,25 +151,21 @@
     const landmark = document.getElementById("landmark").value.trim();
 
     if(!name || !phone || !address || !city || !landmark){
-      return alert("Bhai sab details fill kar de 🙂");
+      return toast("Fill all details");
     }
 
     const orderId = generateOrderId();
     const orders = JSON.parse(localStorage.getItem("orders")) || {};
 
     orders[orderId] = {
-      orderId,
-      name, phone, address, city, landmark,
-      total,
-      items: cart,
+      orderId, name, phone, address, city, landmark,
+      total, items: cart,
       createdAt: Date.now(),
       etaDays: 8
     };
 
     localStorage.setItem("orders", JSON.stringify(orders));
     localStorage.setItem("lastOrderId", orderId);
-
-    // cart clear
     localStorage.removeItem("cart");
 
     document.getElementById("orderBox").innerHTML =
@@ -187,9 +182,8 @@ Address: ${address}, ${landmark}, ${city}`;
     setWhatsApp(msg);
 
     document.getElementById("trackBtn").style.display = "block";
-    alert("✅ Order placed! Ab payment screenshot WhatsApp pe bhej do.");
+    toast("Order placed");
   }
-
   window.placeOrder = placeOrder;
 </script>
 
