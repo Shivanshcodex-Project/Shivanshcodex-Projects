@@ -7,7 +7,7 @@ function saveCart(c){
 
 function addToCart(id){
   const cart = getCart();
-  const p = (window.products || []).find(x => x.id === id);
+  const p = (window.products || window.PRODUCTS || []).find(x => x.id === id);
   if(!p){
     if(window.toast) toast("Product not found");
     return;
