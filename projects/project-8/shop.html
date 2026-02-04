@@ -20,12 +20,12 @@
       <div class="logoDot"></div>
       <div>
         <div style="font-weight:1100">SHOP</div>
-        <div style="font-size:12px;color:#777;font-weight:800;margin-top:-2px">All Products</div>
+        <div style="font-size:12px;color:#777;font-weight:900;margin-top:-2px">All Products</div>
       </div>
     </div>
 
     <div class="rightIcons">
-      <a class="iconBtn" href="cart.html">🛒</a>
+      <button class="iconBtn" onclick="openMiniCart()" aria-label="Cart">🛒</button>
     </div>
   </div>
 
@@ -36,7 +36,6 @@
   </div>
 </header>
 
-<!-- Drawer -->
 <div id="drawerRoot">
   <div class="drawerOverlay" onclick="closeDrawer()"></div>
   <aside class="drawer">
@@ -60,6 +59,7 @@
 
 <script src="js/products.js"></script>
 <script src="js/cart.js"></script>
+<script src="js/ui.js"></script>
 <script>
   function openDrawer(){ document.body.classList.add("drawerOpen"); }
   function closeDrawer(){ document.body.classList.remove("drawerOpen"); }
@@ -67,7 +67,6 @@
   const grid = document.getElementById("grid");
   const q = document.getElementById("q");
 
-  // carry search from home
   const saved = localStorage.getItem("shopSearch");
   if(saved){ q.value = saved; localStorage.removeItem("shopSearch"); }
 
@@ -84,7 +83,7 @@
               <div class="cardTitle">${p.name}</div>
               <div class="priceRow">
                 <div class="price">₹${p.price}</div>
-                <div class="tag">New</div>
+                <div class="tag">Bestseller</div>
               </div>
               <button class="btn btnPrimary" onclick="addToCart('${p.id}')">Add to Cart</button>
             </div>
@@ -92,7 +91,6 @@
         `;
       });
   }
-
   render();
 </script>
 
