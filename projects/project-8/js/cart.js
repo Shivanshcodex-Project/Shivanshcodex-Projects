@@ -7,16 +7,23 @@ function saveCart(c){
 
 function addToCart(id){
   const cart = getCart();
-  const p = products.find(x => x.id === id);
-  if(!p) return alert("Product not found!");
+  const p = (window.products || []).find(x => x.id === id);
+  if(!p){
+    if(window.toast) toast("Product not found");
+    return;
+  }
   cart.push(p);
   saveCart(cart);
-  alert("✅ Added to cart");
+
+  // ✅ no alert popup
+  if(window.toast) toast("Added to cart");
 }
 
 function removeCartItem(index){
   const cart = getCart();
   cart.splice(index,1);
   saveCart(cart);
+
+  if(window.toast) toast("Removed");
   location.reload();
 }
