@@ -8,28 +8,92 @@
 </head>
 <body>
 
-<h1>🛍️ Shop</h1>
+<div class="offerBar">
+  Get Extra 6% Off on Prepaid <span class="pill">Shop Now</span>
+</div>
 
-<div id="shop"></div>
+<header class="header">
+  <div class="headerRow container">
+    <button class="iconBtn" onclick="openDrawer()">☰</button>
 
-<a class="btn" id="payBtn" href="cart.html" style="background:#ff9800;">🛒 Go to Cart</a>
-<a class="btn" id="payBtn" href="index.html" style="background:#999;">⬅️ Home</a>
+    <div class="brand">
+      <div class="logoDot"></div>
+      <div>
+        <div style="font-weight:1100">SHOP</div>
+        <div style="font-size:12px;color:#777;font-weight:800;margin-top:-2px">All Products</div>
+      </div>
+    </div>
+
+    <div class="rightIcons">
+      <a class="iconBtn" href="cart.html">🛒</a>
+    </div>
+  </div>
+
+  <div class="searchWrap container">
+    <div class="searchBox">
+      🔎 <input id="q" placeholder="Search products..." oninput="render()" />
+    </div>
+  </div>
+</header>
+
+<!-- Drawer -->
+<div id="drawerRoot">
+  <div class="drawerOverlay" onclick="closeDrawer()"></div>
+  <aside class="drawer">
+    <div class="drawerHeader">Menu</div>
+    <div class="drawerLinks">
+      <a href="index.html">Home <span>›</span></a>
+      <a href="shop.html">Shop <span>›</span></a>
+      <a href="track.html">Order Tracking <span>›</span></a>
+      <a href="customer-care.html">Customer Care <span>›</span></a>
+      <a href="return-policy.html">Return Policy <span>›</span></a>
+    </div>
+  </aside>
+</div>
+
+<div class="sectionHead">
+  <h2>Products</h2>
+  <span class="badge">20 items</span>
+</div>
+
+<div class="grid" id="grid"></div>
 
 <script src="js/products.js"></script>
 <script src="js/cart.js"></script>
 <script>
-  const shop = document.getElementById("shop");
+  function openDrawer(){ document.body.classList.add("drawerOpen"); }
+  function closeDrawer(){ document.body.classList.remove("drawerOpen"); }
 
-  products.forEach(p => {
-    shop.innerHTML += `
-      <div class="card">
-        <img src="images/${p.folder}/1.jpg" alt="${p.name}">
-        <h3>${p.name}</h3>
-        <p>₹${p.price}</p>
-        <button onclick="addToCart('${p.id}')">Add to Cart</button>
-      </div>
-    `;
-  });
+  const grid = document.getElementById("grid");
+  const q = document.getElementById("q");
+
+  // carry search from home
+  const saved = localStorage.getItem("shopSearch");
+  if(saved){ q.value = saved; localStorage.removeItem("shopSearch"); }
+
+  function render(){
+    const term = q.value.trim().toLowerCase();
+    grid.innerHTML = "";
+    (products||[])
+      .filter(p => !term || p.name.toLowerCase().includes(term))
+      .forEach(p=>{
+        grid.innerHTML += `
+          <div class="card">
+            <img class="thumb" src="images/${p.folder}/1.jpg" alt="${p.name}">
+            <div class="cardBody">
+              <div class="cardTitle">${p.name}</div>
+              <div class="priceRow">
+                <div class="price">₹${p.price}</div>
+                <div class="tag">New</div>
+              </div>
+              <button class="btn btnPrimary" onclick="addToCart('${p.id}')">Add to Cart</button>
+            </div>
+          </div>
+        `;
+      });
+  }
+
+  render();
 </script>
 
 </body>
