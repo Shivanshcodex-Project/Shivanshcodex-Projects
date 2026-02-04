@@ -38,7 +38,7 @@ function trackOrder(){
       </p>
 
       <div class="card" style="padding:12px;margin-top:10px;">
-        <div style="display:grid;gap:8px;font-weight:800;">
+        <div style="display:grid;gap:8px;font-weight:900;">
           <div><span class="muted">Name:</span> ${order.name}</div>
           <div><span class="muted">Phone:</span> ${order.phone}</div>
           <div><span class="muted">Address:</span> ${order.address}</div>
@@ -55,7 +55,7 @@ function trackOrder(){
           <div class="fill" style="width:${percent}%;"></div>
         </div>
 
-        <div class="small">Delivery progress: ${percent}% • ETA: ${totalDays} days</div>
+        <div class="muted center">Delivery progress: ${percent}% • ETA: ${totalDays} days</div>
       </div>
     </div>
   `;
