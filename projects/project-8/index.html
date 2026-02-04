@@ -8,14 +8,101 @@
 </head>
 <body>
 
-<h1>👕 Priyanshu Clothing</h1>
-<p class="small">Trendy Streetwear • Easy UPI Payment • Fast Delivery</p>
+<div class="offerBar">
+  Get Extra 6% Off on Prepaid <span class="pill">Shop Now</span>
+</div>
 
-<a class="btn" id="payBtn" href="shop.html">🛍️ Open Shop</a>
-<a class="btn" id="payBtn" href="cart.html" style="background:#ff9800;">🛒 View Cart</a>
-<a class="btn" id="payBtn" href="track.html" style="background:#673ab7;">📦 Track Order</a>
-<a class="btn" id="whatsappBtn" href="https://wa.me/584268849301" target="_blank">📞 WhatsApp</a>
+<header class="header">
+  <div class="headerRow container">
+    <button class="iconBtn" onclick="openDrawer()" aria-label="Menu">☰</button>
 
-<p class="small">© 2026 Priyanshu Clothing</p>
+    <div class="brand">
+      <div class="logoDot"></div>
+      <div>
+        <div style="font-weight:1100">PRIYANSHU</div>
+        <div style="font-size:12px;color:#777;font-weight:800;margin-top:-2px">Clothing Store</div>
+      </div>
+    </div>
+
+    <div class="rightIcons">
+      <a class="iconBtn" href="cart.html" aria-label="Cart">🛒</a>
+    </div>
+  </div>
+
+  <div class="searchWrap container">
+    <div class="searchBox">
+      🔎 <input id="searchTop" placeholder="Search products..." oninput="goShopSearch()" />
+    </div>
+  </div>
+</header>
+
+<!-- Drawer -->
+<div id="drawerRoot">
+  <div class="drawerOverlay" onclick="closeDrawer()"></div>
+  <aside class="drawer">
+    <div class="drawerHeader">Menu</div>
+    <div class="drawerLinks">
+      <a href="index.html">Home <span>›</span></a>
+      <a href="shop.html">Shop <span>›</span></a>
+      <a href="track.html">Order Tracking <span>›</span></a>
+      <a href="customer-care.html">Customer Care <span>›</span></a>
+      <a href="return-policy.html">Return Policy <span>›</span></a>
+    </div>
+  </aside>
+</div>
+
+<!-- Hero -->
+<section class="hero">
+  <img class="heroImg" src="images/banners/hero.jpg" alt="Banner">
+  <div class="heroText">
+    <h1>Crafting Your Style • Premium Streetwear</h1>
+    <p>Cashless UPI • Fast Delivery • WhatsApp Support</p>
+  </div>
+</section>
+
+<div class="sectionHead">
+  <h2>Popular Picks</h2>
+  <span class="badge">Bestsellers</span>
+</div>
+
+<div class="grid" id="homeGrid"></div>
+
+<div class="container" style="padding:12px">
+  <a class="btn btnPrimary" href="shop.html">🛍️ Explore Full Shop</a>
+  <a class="btn btnSoft" href="track.html">📦 Track Your Order</a>
+</div>
+
+<script src="js/products.js"></script>
+<script>
+  function openDrawer(){ document.body.classList.add("drawerOpen"); }
+  function closeDrawer(){ document.body.classList.remove("drawerOpen"); }
+
+  // show 4 featured items
+  const grid = document.getElementById("homeGrid");
+  (products || []).slice(0,4).forEach(p=>{
+    grid.innerHTML += `
+      <div class="card">
+        <img class="thumb" src="images/${p.folder}/1.jpg" alt="${p.name}">
+        <div class="cardBody">
+          <div class="cardTitle">${p.name}</div>
+          <div class="priceRow">
+            <div class="price">₹${p.price}</div>
+            <div class="tag">Bestseller</div>
+          </div>
+          <a class="btn btnPrimary" href="shop.html">View</a>
+        </div>
+      </div>
+    `;
+  });
+
+  function goShopSearch(){
+    const v = document.getElementById("searchTop").value.trim();
+    if(v.length >= 2){
+      localStorage.setItem("shopSearch", v);
+      window.location.href = "shop.html";
+    }
+  }
+</script>
+
 </body>
 </html>
