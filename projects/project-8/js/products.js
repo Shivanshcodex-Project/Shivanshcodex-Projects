@@ -1,4 +1,4 @@
-const products = [
+window.products = [
   { id:"P1001", name:"Oversized Hoodie", price:1299, folder:"product1" },
   { id:"P1002", name:"Street T-Shirt", price:799, folder:"product2" },
   { id:"P1003", name:"Cargo Pant", price:1499, folder:"product3" },
