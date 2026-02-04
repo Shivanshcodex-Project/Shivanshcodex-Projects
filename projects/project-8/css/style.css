@@ -1,140 +1,229 @@
-*{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
-  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
+:root{
+  --maroon:#7a1b1b;
+  --maroon2:#5c1111;
+  --cream:#fbf7f0;
+  --card:#ffffff;
+  --text:#141414;
+  --muted:#6b6b6b;
+  --border:rgba(0,0,0,.08);
+  --shadow:0 14px 40px rgba(0,0,0,.10);
+  --radius:16px;
 }
 
-body{
-  background:#f5f7fb;
-  color:#111;
-}
+*{margin:0;padding:0;box-sizing:border-box;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial}
+body{background:var(--cream);color:var(--text)}
+a{text-decoration:none;color:inherit}
+img{max-width:100%;display:block}
 
-h1,h2{
-  text-align:center;
-  margin:16px 0;
-}
+.container{max-width:1100px;margin:0 auto;padding:12px}
 
-a{ text-decoration:none; }
-
-/* ===== SHOP GRID ===== */
-#shop{
-  display:grid;
-  grid-template-columns: repeat(auto-fill, minmax(160px,1fr));
-  gap:14px;
-  padding:14px;
-}
-
-/* ===== CARD ===== */
-.card{
-  background:#fff;
-  border-radius:14px;
-  padding:10px;
-  box-shadow:0 8px 25px rgba(0,0,0,.08);
-  transition:.2s;
-}
-
-.card:hover{ transform:translateY(-3px); }
-
-.card img{
-  width:100%;
-  height:160px;
-  object-fit:cover;
-  border-radius:12px;
-}
-
-.card h3{
-  font-size:15px;
-  margin:8px 0 4px;
-  text-align:center;
-}
-
-.card p{
+/* ===== Top Offer Bar ===== */
+.offerBar{
+  background:linear-gradient(90deg,var(--maroon2),var(--maroon));
+  color:#fff;
+  padding:10px 12px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
   font-weight:800;
-  margin-bottom:8px;
-  text-align:center;
+  position:sticky;
+  top:0;
+  z-index:50;
 }
-
-/* ===== BUTTONS ===== */
-.btn, button, #payBtn, #whatsappBtn{
-  width:calc(100% - 28px);
-  max-width:520px;
-  margin:10px auto;
-  display:block;
-  padding:12px;
-  border-radius:12px;
-  font-weight:800;
-  text-align:center;
-  border:none;
-  cursor:pointer;
-}
-
-button{ background:#1e90ff; color:#fff; }
-
-.card button{
-  width:100%;
-  margin:0;
-  padding:9px;
-  border-radius:10px;
-  background:#1e90ff;
-  color:#fff;
-}
-
-#payBtn{
-  background:#0bbd87;
-  color:#fff;
-}
-
-#whatsappBtn{
-  background:#25d366;
-  color:#fff;
-}
-
-/* ===== INPUTS ===== */
-input{
-  width:calc(100% - 28px);
-  max-width:520px;
-  margin:10px auto;
-  display:block;
-  padding:12px;
-  border-radius:10px;
-  border:1px solid #ccc;
-}
-
-/* ===== PAYMENT ===== */
-#bill{
-  text-align:center;
-  font-size:18px;
-  margin:10px 0;
+.offerBar .pill{
+  border:2px dashed rgba(255,255,255,.55);
+  padding:6px 10px;
+  border-radius:999px;
   font-weight:900;
 }
 
-img#qr{
-  display:block;
-  margin:12px auto;
-  width:260px;
-  border-radius:14px;
-  box-shadow:0 8px 25px rgba(0,0,0,.10);
+/* ===== Header ===== */
+.header{
+  background:#fff;
+  border-bottom:1px solid var(--border);
+  position:sticky;
+  top:42px;
+  z-index:40;
+}
+.headerRow{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  padding:10px 12px;
+}
+.brand{
+  display:flex;align-items:center;gap:10px;font-weight:1000;letter-spacing:.3px
+}
+.logoDot{
+  width:34px;height:34px;border-radius:12px;
+  background:linear-gradient(135deg,var(--maroon),#b03a3a);
+  box-shadow:0 10px 24px rgba(122,27,27,.35);
+}
+.iconBtn{
+  width:42px;height:42px;border-radius:14px;border:1px solid var(--border);
+  background:#fff;display:grid;place-items:center;cursor:pointer;
+}
+.rightIcons{display:flex;gap:10px}
+
+/* ===== Search ===== */
+.searchWrap{
+  padding:0 12px 12px;
+}
+.searchBox{
+  display:flex;align-items:center;gap:10px;
+  background:#fff;border:1px solid var(--border);
+  border-radius:999px;
+  padding:10px 14px;
+}
+.searchBox input{
+  width:100%;
+  border:none;
+  outline:none;
+  font-weight:700;
+  color:var(--text);
 }
 
-/* ===== TRACK PROGRESS ===== */
-.bar{
-  width:90%;
-  max-width:520px;
-  height:12px;
-  background:#ddd;
-  margin:16px auto;
-  border-radius:10px;
+/* ===== Drawer Menu ===== */
+.drawerOverlay{
+  position:fixed;inset:0;background:rgba(0,0,0,.35);
+  opacity:0;pointer-events:none;transition:.2s;z-index:80;
+}
+.drawer{
+  position:fixed;top:0;left:0;height:100vh;width:min(320px,88vw);
+  background:#fff;border-right:1px solid var(--border);
+  transform:translateX(-105%);transition:.22s;z-index:90;
+  box-shadow:var(--shadow);
+}
+.drawerHeader{
+  background:linear-gradient(135deg,var(--maroon2),var(--maroon));
+  color:#fff;padding:18px 14px;font-weight:1000;
+}
+.drawerLinks{padding:10px}
+.drawerLinks a{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:12px 12px;border-radius:14px;font-weight:900;
+}
+.drawerLinks a:hover{background:#f4efe6}
+.drawerOpen .drawerOverlay{opacity:1;pointer-events:auto}
+.drawerOpen .drawer{transform:translateX(0)}
+
+/* ===== Hero Banner ===== */
+.hero{
+  margin:12px;
+  border-radius:22px;
   overflow:hidden;
+  background:#fff;
+  border:1px solid var(--border);
+  box-shadow:var(--shadow);
+}
+.heroImg{
+  width:100%;
+  height:220px;
+  object-fit:cover;
+}
+.heroText{
+  padding:12px;
+}
+.heroText h1{font-size:20px;font-weight:1000}
+.heroText p{color:var(--muted);margin-top:6px;font-weight:700}
+
+/* ===== Section Head ===== */
+.sectionHead{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 12px;margin-top:10px;
+}
+.sectionHead h2{font-size:18px;font-weight:1000}
+.badge{
+  background:#fff;border:1px solid var(--border);
+  padding:8px 10px;border-radius:999px;font-weight:900;color:var(--maroon);
+}
+
+/* ===== Grid ===== */
+.grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:12px;
+  padding:12px;
+}
+@media(min-width:820px){
+  .grid{grid-template-columns:repeat(4,1fr)}
+  .heroImg{height:320px}
+}
+
+/* ===== Product Card ===== */
+.card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:18px;
+  overflow:hidden;
+  box-shadow:0 10px 26px rgba(0,0,0,.07);
+}
+.card .thumb{height:170px;object-fit:cover}
+.cardBody{padding:10px}
+.cardTitle{font-weight:1000;font-size:14px}
+.priceRow{display:flex;align-items:center;justify-content:space-between;margin-top:8px}
+.price{font-weight:1100;color:var(--maroon)}
+.tag{
+  font-size:11px;font-weight:1000;
+  background:#f6efe4;border:1px solid rgba(122,27,27,.2);
+  color:var(--maroon);padding:5px 8px;border-radius:999px;
+}
+
+.btn{
+  width:100%;
+  padding:11px;
+  border:none;
+  border-radius:14px;
+  font-weight:1000;
+  cursor:pointer;
+  margin-top:10px;
+}
+.btnPrimary{background:var(--maroon);color:#fff}
+.btnPrimary:active{transform:scale(.99)}
+.btnSoft{background:#f4efe6;border:1px solid var(--border);color:var(--maroon)}
+.btnDanger{background:#ff4d4d;color:#fff}
+
+/* ===== Cart / Payment Blocks ===== */
+.panel{
+  background:#fff;border:1px solid var(--border);
+  border-radius:18px;box-shadow:var(--shadow);
+  padding:12px;margin:12px;
+}
+.center{text-align:center}
+.muted{color:var(--muted);font-weight:700}
+.total{
+  font-size:18px;font-weight:1100;color:var(--maroon);
+  margin-top:10px;text-align:center;
+}
+
+.qr{
+  width:260px;margin:12px auto;border-radius:18px;
+  box-shadow:0 12px 30px rgba(0,0,0,.12);
+}
+
+input{
+  width:100%;
+  padding:12px;
+  border-radius:14px;
+  border:1px solid var(--border);
+  outline:none;
+  font-weight:800;
+  background:#fff;
+}
+
+/* ===== Progress ===== */
+.bar{
+  width:100%;
+  height:12px;
+  background:#eee;
+  border-radius:999px;
+  overflow:hidden;
+  margin:12px 0;
 }
 .fill{
   height:100%;
   width:0%;
-  background:#1e90ff;
-}
-.small{
-  text-align:center;
-  font-size:12px;
-  color:#666;
-  margin:8px 12px;
+  background:linear-gradient(90deg,#1e90ff,#2f7dff);
 }
