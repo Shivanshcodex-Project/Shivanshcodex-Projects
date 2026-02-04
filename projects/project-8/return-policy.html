@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Return Policy</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="offerBar">
+  Easy Returns <span class="pill">Read Policy</span>
+</div>
+
+<header class="header">
+  <div class="headerRow container">
+    <button class="iconBtn" onclick="openDrawer()">☰</button>
+    <div class="brand">
+      <div class="logoDot"></div>
+      <div>
+        <div style="font-weight:1100">RETURN POLICY</div>
+        <div style="font-size:12px;color:#777;font-weight:800;margin-top:-2px">Simple & clear</div>
+      </div>
+    </div>
+    <div class="rightIcons">
+      <a class="iconBtn" href="cart.html">🛒</a>
+    </div>
+  </div>
+</header>
+
+<div id="drawerRoot">
+  <div class="drawerOverlay" onclick="closeDrawer()"></div>
+  <aside class="drawer">
+    <div class="drawerHeader">Menu</div>
+    <div class="drawerLinks">
+      <a href="index.html">Home <span>›</span></a>
+      <a href="shop.html">Shop <span>›</span></a>
+      <a href="track.html">Order Tracking <span>›</span></a>
+      <a href="customer-care.html">Customer Care <span>›</span></a>
+      <a href="return-policy.html">Return Policy <span>›</span></a>
+    </div>
+  </aside>
+</div>
+
+<div class="panel">
+  <h2 class="center" style="margin-bottom:6px;">Return & Exchange</h2>
+  <p class="muted center">Please read carefully</p>
+
+  <div class="card" style="padding:12px;margin-top:10px;">
+    <b>✅ Return Window</b>
+    <div class="muted">Delivery ke 2 days ke andar request.</div>
+  </div>
+
+  <div class="card" style="padding:12px;margin-top:10px;">
+    <b>✅ Conditions</b>
+    <div class="muted">Product unused, original packing, tags intact.</div>
+  </div>
+
+  <div class="card" style="padding:12px;margin-top:10px;">
+    <b>❌ Non-returnable</b>
+    <div class="muted">Damaged by user / wrong size chosen / sale items (optional).</div>
+  </div>
+
+  <a class="btn btnPrimary" href="https://wa.me/584268849301" target="_blank">📞 Request Return on WhatsApp</a>
+</div>
+
+<script>
+  function openDrawer(){ document.body.classList.add("drawerOpen"); }
+  function closeDrawer(){ document.body.classList.remove("drawerOpen"); }
+</script>
+
+</body>
+</html>
