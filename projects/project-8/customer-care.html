@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Customer Care</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="offerBar">
+  Support • Fast Reply <span class="pill">WhatsApp</span>
+</div>
+
+<header class="header">
+  <div class="headerRow container">
+    <button class="iconBtn" onclick="openDrawer()">☰</button>
+    <div class="brand">
+      <div class="logoDot"></div>
+      <div>
+        <div style="font-weight:1100">CUSTOMER CARE</div>
+        <div style="font-size:12px;color:#777;font-weight:800;margin-top:-2px">We’re here to help</div>
+      </div>
+    </div>
+    <div class="rightIcons">
+      <a class="iconBtn" href="cart.html">🛒</a>
+    </div>
+  </div>
+</header>
+
+<div id="drawerRoot">
+  <div class="drawerOverlay" onclick="closeDrawer()"></div>
+  <aside class="drawer">
+    <div class="drawerHeader">Menu</div>
+    <div class="drawerLinks">
+      <a href="index.html">Home <span>›</span></a>
+      <a href="shop.html">Shop <span>›</span></a>
+      <a href="track.html">Order Tracking <span>›</span></a>
+      <a href="customer-care.html">Customer Care <span>›</span></a>
+      <a href="return-policy.html">Return Policy <span>›</span></a>
+    </div>
+  </aside>
+</div>
+
+<div class="panel">
+  <h2 class="center" style="margin-bottom:6px;">Contact Us</h2>
+  <p class="muted center">Fastest support on WhatsApp</p>
+
+  <a class="btn btnPrimary" href="https://wa.me/584268849301" target="_blank">📞 WhatsApp: +58426-8849301</a>
+
+  <div style="margin-top:10px;display:grid;gap:10px;">
+    <div class="card" style="padding:12px;">
+      <b>Support Timings</b>
+      <div class="muted">Mon–Sun: 10 AM – 8 PM</div>
+    </div>
+
+    <div class="card" style="padding:12px;">
+      <b>Order Help</b>
+      <div class="muted">Payment screenshot / address update / delivery query</div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function openDrawer(){ document.body.classList.add("drawerOpen"); }
+  function closeDrawer(){ document.body.classList.remove("drawerOpen"); }
+</script>
+
+</body>
+</html>
