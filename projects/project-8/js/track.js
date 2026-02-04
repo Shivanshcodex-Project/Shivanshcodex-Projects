@@ -7,9 +7,9 @@ function trackOrder(){
 
   if(!order){
     result.innerHTML = `
-      <div class="card" style="max-width:520px;margin:12px auto;">
-        <h3 style="text-align:center;">❌ Order not found</h3>
-        <p class="small">Order ID check karke dobara daalo.</p>
+      <div class="panel">
+        <h2 class="center">❌ Order not found</h2>
+        <p class="muted center">Order ID sahi se check karo.</p>
       </div>
     `;
     return;
@@ -30,31 +30,33 @@ function trackOrder(){
   if(percent >= 100) status = "Delivered ✅";
 
   result.innerHTML = `
-    <div class="card" style="max-width:520px;margin:12px auto;">
-      <h3 style="text-align:center;">✅ Order Found</h3>
+    <div class="panel">
+      <h2 class="center">✅ Order Found</h2>
 
-      <p style="text-align:center;font-weight:900;margin:6px 0;">
-        Order ID: <span style="color:#1e90ff">${order.orderId}</span>
+      <p class="center" style="font-weight:1100;margin-top:6px;">
+        Order ID: <span style="color:#1e90ff;">${order.orderId}</span>
       </p>
 
-      <div style="padding:10px;display:grid;gap:8px;">
-        <div><b>Name:</b> ${order.name}</div>
-        <div><b>Phone:</b> ${order.phone}</div>
-        <div><b>Address:</b> ${order.address}</div>
-        <div><b>City:</b> ${order.city}</div>
-        <div><b>Landmark:</b> ${order.landmark}</div>
-        <div><b>Total:</b> ₹${order.total}</div>
+      <div class="card" style="padding:12px;margin-top:10px;">
+        <div style="display:grid;gap:8px;font-weight:800;">
+          <div><span class="muted">Name:</span> ${order.name}</div>
+          <div><span class="muted">Phone:</span> ${order.phone}</div>
+          <div><span class="muted">Address:</span> ${order.address}</div>
+          <div><span class="muted">City:</span> ${order.city}</div>
+          <div><span class="muted">Landmark:</span> ${order.landmark}</div>
+          <div><span class="muted">Total:</span> ₹${order.total}</div>
+        </div>
       </div>
 
-      <p style="text-align:center;font-weight:900;margin-top:6px;">
-        Status: ${status}
-      </p>
+      <div class="card" style="padding:12px;margin-top:10px;">
+        <div class="center" style="font-weight:1100;">Status: ${status}</div>
 
-      <div class="bar">
-        <div class="fill" style="width:${percent}%;"></div>
+        <div class="bar">
+          <div class="fill" style="width:${percent}%;"></div>
+        </div>
+
+        <div class="small">Delivery progress: ${percent}% • ETA: ${totalDays} days</div>
       </div>
-
-      <p class="small">Delivery progress: ${percent}% (ETA: ${totalDays} days)</p>
     </div>
   `;
 }
