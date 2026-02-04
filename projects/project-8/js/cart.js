@@ -14,8 +14,6 @@ function addToCart(id){
   }
   cart.push(p);
   saveCart(cart);
-
-  // ✅ no alert popup
   if(window.toast) toast("Added to cart");
 }
 
@@ -23,7 +21,6 @@ function removeCartItem(index){
   const cart = getCart();
   cart.splice(index,1);
   saveCart(cart);
-
   if(window.toast) toast("Removed");
   location.reload();
 }
