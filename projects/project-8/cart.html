@@ -20,17 +20,16 @@
       <div class="logoDot"></div>
       <div>
         <div style="font-weight:1100">CART</div>
-        <div style="font-size:12px;color:#777;font-weight:800;margin-top:-2px">Your selected items</div>
+        <div style="font-size:12px;color:#777;font-weight:900;margin-top:-2px">Your selected items</div>
       </div>
     </div>
 
     <div class="rightIcons">
-      <a class="iconBtn" href="shop.html" aria-label="Shop">🛍️</a>
+      <button class="iconBtn" onclick="openMiniCart()" aria-label="Cart">🛒</button>
     </div>
   </div>
 </header>
 
-<!-- Drawer -->
 <div id="drawerRoot">
   <div class="drawerOverlay" onclick="closeDrawer()"></div>
   <aside class="drawer">
@@ -59,7 +58,7 @@
 
 <script src="js/products.js"></script>
 <script src="js/cart.js"></script>
-
+<script src="js/ui.js"></script>
 <script>
   function openDrawer(){ document.body.classList.add("drawerOpen"); }
   function closeDrawer(){ document.body.classList.remove("drawerOpen"); }
@@ -94,7 +93,6 @@
       `;
     });
   }
-
   document.getElementById("total").innerText = "Total Amount: ₹" + sum;
 </script>
 
