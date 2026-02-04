@@ -166,12 +166,20 @@ img{max-width:100%;display:block}
 /* ===== Buttons ===== */
 .btn{
   width:100%;
-  padding:11px;
+  padding:12px;
   border:none;
-  border-radius:14px;
+  border-radius:16px;
   font-weight:1100;
   cursor:pointer;
   margin-top:10px;
+
+  /* ✅ anchor + button same look */
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  gap:8px;
+  line-height:1;
 }
 .btnPrimary{background:var(--maroon);color:#fff}
 .btnSoft{background:#f4efe6;border:1px solid var(--border);color:var(--maroon)}
