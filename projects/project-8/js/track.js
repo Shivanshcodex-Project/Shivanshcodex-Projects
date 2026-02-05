@@ -1,62 +1,58 @@
-function trackOrder(){
+function getOrders(){
+  try{ return JSON.parse(localStorage.getItem("orders_v1")) || []; }catch(e){ return []; }
+}
+
+function statusFromPct(p){
+  if(p < 25) return "Processing";
+  if(p < 55) return "Packed & Shipped";
+  if(p < 85) return "Out for delivery";
+  return "Delivered / Ready";
+}
+
+window.lookup = function(){
   const id = document.getElementById("oid").value.trim();
+  const orders = getOrders();
+  const o = orders.find(x => x.id === id);
+
   const result = document.getElementById("result");
-
-  const orders = JSON.parse(localStorage.getItem("orders")) || {};
-  const order = orders[id];
-
-  if(!order){
-    result.innerHTML = `
-      <div class="panel">
-        <h2 class="center">❌ Order not found</h2>
-        <p class="muted center">Order ID sahi se check karo.</p>
-      </div>
-    `;
+  if(!o){
+    toast("Order not found");
+    result.style.display="none";
     return;
   }
 
-  const totalDays = order.etaDays || 8;
-  const totalMs = totalDays * 24 * 60 * 60 * 1000;
+  result.style.display="block";
+  document.getElementById("rTitle").textContent = `Order: ${o.id}`;
+  document.getElementById("rSub").textContent = `${o.city}${o.landmark ? ", "+o.landmark : ""}`;
 
-  const now = Date.now();
-  const elapsed = now - (order.createdAt || now);
-  const progress = Math.max(0, Math.min(1, elapsed / totalMs));
-  const percent = Math.round(progress * 100);
+  const days = o.etaDays || 8;
+  const elapsedDays = (Date.now() - o.createdAt) / (1000*60*60*24);
+  const pct = Math.max(0, Math.min(100, (elapsedDays / days) * 100));
+  document.getElementById("fill").style.width = pct.toFixed(0) + "%";
 
-  let status = "Order Confirmed";
-  if(percent >= 25) status = "Packed";
-  if(percent >= 50) status = "Shipped";
-  if(percent >= 75) status = "Out for Delivery";
-  if(percent >= 100) status = "Delivered ✅";
+  const st = statusFromPct(pct);
+  document.getElementById("rEta").textContent = `${st} • Delivery in ${days} days`;
 
-  result.innerHTML = `
-    <div class="panel">
-      <h2 class="center">✅ Order Found</h2>
-
-      <p class="center" style="font-weight:1100;margin-top:6px;">
-        Order ID: <span style="color:#1e90ff;">${order.orderId}</span>
-      </p>
-
-      <div class="card" style="padding:12px;margin-top:10px;">
-        <div style="display:grid;gap:8px;font-weight:900;">
-          <div><span class="muted">Name:</span> ${order.name}</div>
-          <div><span class="muted">Phone:</span> ${order.phone}</div>
-          <div><span class="muted">Address:</span> ${order.address}</div>
-          <div><span class="muted">City:</span> ${order.city}</div>
-          <div><span class="muted">Landmark:</span> ${order.landmark}</div>
-          <div><span class="muted">Total:</span> ₹${order.total}</div>
-        </div>
-      </div>
-
-      <div class="card" style="padding:12px;margin-top:10px;">
-        <div class="center" style="font-weight:1100;">Status: ${status}</div>
-
-        <div class="bar">
-          <div class="fill" style="width:${percent}%;"></div>
-        </div>
-
-        <div class="muted center">Delivery progress: ${percent}% • ETA: ${totalDays} days</div>
+  document.getElementById("rDetails").innerHTML = `
+    <div class="panel" style="margin:0;">
+      <b>Delivery Address</b>
+      <div class="muted">${o.name} • ${o.phone}</div>
+      <div>${o.addr}</div>
+      <div>${o.city}${o.landmark ? ", "+o.landmark : ""}</div>
+    </div>
+    <div class="panel" style="margin:0;">
+      <b>Items</b>
+      <div class="muted">Total: ₹${o.total}</div>
+      <div style="margin-top:6px;display:grid;gap:6px;">
+        ${o.items.map(it=>`<div>• ${it.name} (x${it.qty})</div>`).join("")}
       </div>
     </div>
   `;
+};
+
+const last = localStorage.getItem("lastOrderId");
+if(last){
+  document.getElementById("oid").value = last;
+  localStorage.removeItem("lastOrderId");
+  lookup();
 }
