@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Priyanshu Clothing</title>
+  <title>Priyanshu Clothing Store</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <link rel="stylesheet" href="css/style.css">
 </head>
@@ -14,7 +14,7 @@
 
 <header class="header">
   <div class="headerRow container">
-    <button class="iconBtn" onclick="openDrawer()" aria-label="Menu">☰</button>
+    <button class="iconBtn" onclick="openDrawer()">☰</button>
 
     <div class="brand">
       <div class="logoDot"></div>
@@ -25,18 +25,17 @@
     </div>
 
     <div class="rightIcons">
-      <button class="iconBtn" onclick="openMiniCart()" aria-label="Cart">🛒</button>
+      <button class="iconBtn" onclick="openMiniCart()">🛒</button>
     </div>
   </div>
 
   <div class="searchWrap container">
-    <div class="searchBox">
-      🔎 <input id="searchTop" placeholder="Search products..." oninput="goShopSearch()" />
+    <div class="searchBox" onclick="goShopSearch()">
+      🔎 <input placeholder="Search products..." disabled />
     </div>
   </div>
 </header>
 
-<!-- Drawer -->
 <div id="drawerRoot">
   <div class="drawerOverlay" onclick="closeDrawer()"></div>
   <aside class="drawer">
@@ -51,57 +50,32 @@
   </aside>
 </div>
 
-<section class="hero">
-  <img class="heroImg" src="images/banners/hero.jpg" alt="Banner">
+<div class="hero">
+  <img class="heroImg" src="images/product1/1.jpg" alt="Banner">
   <div class="heroText">
-    <h1>Crafting Your Style • Premium Streetwear</h1>
-    <p>Cashless UPI • Fast Delivery • WhatsApp Support</p>
+    <h1>Popular Picks • Bestsellers</h1>
+    <p>Premium quality clothing • Fast delivery • WhatsApp support</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px;">
+      <a class="btn btnPrimary" href="shop.html">🛍️ Explore Full Shop</a>
+      <a class="btn btnSoft" href="track.html">📦 Track Your Order</a>
+    </div>
   </div>
-</section>
-
-<div class="sectionHead">
-  <h2>Popular Picks</h2>
-  <span class="badge">Bestsellers</span>
 </div>
 
-<div class="grid" id="homeGrid"></div>
-
-<div class="container" style="padding:12px">
-  <a class="btn btnPrimary" href="shop.html">🛍️ Explore Full Shop</a>
-  <a class="btn btnSoft" href="track.html">📦 Track Your Order</a>
+<div class="panel center">
+  <h2>Secure UPI Payment</h2>
+  <p class="muted">Pay via QR • Send screenshot on WhatsApp</p>
+  <a class="btn btnPrimary" href="shop.html">Start Shopping</a>
 </div>
 
 <script src="js/products.js"></script>
+<script src="js/cart.js"></script>
 <script src="js/ui.js"></script>
 <script>
   function openDrawer(){ document.body.classList.add("drawerOpen"); }
   function closeDrawer(){ document.body.classList.remove("drawerOpen"); }
-
-  const grid = document.getElementById("homeGrid");
-  (products || []).slice(0,4).forEach(p=>{
-    grid.innerHTML += `
-      <div class="card">
-        <img class="thumb" src="images/${p.folder}/1.jpg" alt="${p.name}">
-        <div class="cardBody">
-          <div class="cardTitle">${p.name}</div>
-          <div class="priceRow">
-            <div class="price">₹${p.price}</div>
-            <div class="tag">Bestseller</div>
-          </div>
-          <a class="btn btnPrimary" href="shop.html">View</a>
-        </div>
-      </div>
-    `;
-  });
-
-  function goShopSearch(){
-    const v = document.getElementById("searchTop").value.trim();
-    if(v.length >= 2){
-      localStorage.setItem("shopSearch", v);
-      window.location.href = "shop.html";
-    }
-  }
+  function goShopSearch(){ localStorage.setItem("shopSearch",""); location.href="shop.html"; }
 </script>
-
+<script src="js/animate.js"></script>
 </body>
 </html>
