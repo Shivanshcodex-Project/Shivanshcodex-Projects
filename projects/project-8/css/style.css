@@ -14,7 +14,6 @@
 body{background:var(--cream);color:var(--text)}
 a{text-decoration:none;color:inherit}
 img{max-width:100%;display:block}
-
 .container{max-width:1100px;margin:0 auto;padding:12px}
 
 /* ===== Top Offer Bar ===== */
@@ -53,9 +52,7 @@ img{max-width:100%;display:block}
   gap:12px;
   padding:10px 12px;
 }
-.brand{
-  display:flex;align-items:center;gap:10px;font-weight:1000;letter-spacing:.3px
-}
+.brand{display:flex;align-items:center;gap:10px;font-weight:1000;letter-spacing:.3px}
 .logoDot{
   width:34px;height:34px;border-radius:12px;
   background:linear-gradient(135deg,var(--maroon),#b03a3a);
@@ -172,7 +169,6 @@ img{max-width:100%;display:block}
   font-weight:1100;
   cursor:pointer;
   margin-top:10px;
-
   display:flex;
   align-items:center;
   justify-content:center;
@@ -312,11 +308,8 @@ button:active, .btn:active, .iconBtn:active{ transform: scale(.98); filter: brig
 body.sheetOpen .sheetOverlay{ opacity:1; pointer-events:auto; }
 body.sheetOpen .sheet{ transform:translateY(0); }
 
-/* ===== Product page: Qty + Sticky bar + Thumbs ===== */
-.qtyWrap{
-  display:flex;align-items:center;justify-content:space-between;
-  gap:10px;margin-top:12px;
-}
+/* ===== Product page: Qty + Sticky bar ===== */
+.qtyWrap{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:12px;}
 .qtyBox{
   display:flex;align-items:center;gap:10px;
   background:#fff;border:1px solid var(--border);
@@ -331,60 +324,42 @@ body.sheetOpen .sheet{ transform:translateY(0); }
 }
 .qtyNum{ min-width:30px;text-align:center;font-weight:1200; }
 
-.thumbsRow img{
-  width:72px;height:72px;object-fit:cover;
-  border-radius:14px;border:1px solid rgba(0,0,0,.10);
-}
-
 .stickyBar{
   position:fixed;left:0;right:0;bottom:0;
-  background:#fff;
-  border-top:1px solid var(--border);
+  background:#fff;border-top:1px solid var(--border);
   box-shadow:0 -18px 45px rgba(0,0,0,.12);
-  padding:10px;
-  z-index:160;
+  padding:10px;z-index:160;
 }
 .stickyBarInner{
   max-width:1100px;margin:0 auto;
   display:grid;grid-template-columns:1fr 1fr;gap:10px;
 }
-.stickySpacer{height:80px;}
+.stickySpacer{height:86px;}
 
-/* ===== Product Slider ===== */
-.slider{
-  width:100%;
-  background:#fff;
-  border-top:1px solid rgba(0,0,0,.06);
-  border-bottom:1px solid rgba(0,0,0,.06);
-  overflow:hidden;
-}
-.slideTrack{
-  display:flex;
-  width:100%;
-  transform:translateX(0);
-  transition:transform .25s ease;
-  touch-action: pan-y;
-}
-.slide{
-  min-width:100%;
-  height:320px;
-  background:#fff;
-}
-.slide img{
-  width:100%;
-  height:100%;
-  object-fit:cover;
-}
+/* ===== Slider (7 photos) ===== */
+.slider{position:relative;overflow:hidden;width:100%;height:320px;}
+.slideTrack{display:flex;transition:transform .35s ease;}
+.slide{min-width:100%;}
+.slide img{width:100%;height:320px;object-fit:cover;}
 .dots{
-  display:flex;
-  gap:8px;
-  justify-content:center;
-  padding:10px 0 12px;
+  position:absolute;bottom:10px;left:50%;
+  transform:translateX(-50%);display:flex;gap:6px;
 }
-.dot{
-  width:8px;height:8px;border-radius:999px;
-  background:rgba(0,0,0,.18);
+.dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.55);}
+.dot.active{background:#fff;}
+
+/* ===== Animations Pack (Site-wide) ===== */
+*{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;}
+@media (prefers-reduced-motion: reduce){
+  *{animation:none !important;transition:none !important;scroll-behavior:auto !important;}
 }
-.dot.active{
-  background:var(--maroon);
-  }
+body{opacity:0;transform:translateY(10px);transition:opacity .35s ease,transform .35s ease;}
+body.pageReady{opacity:1;transform:translateY(0);}
+.card,.panel,.iconBtn,.btn,.sheet,.drawer{transition:transform .18s ease,box-shadow .18s ease,filter .18s ease,background .18s ease,border-color .18s ease;}
+.card:hover{transform:translateY(-2px);box-shadow:0 16px 40px rgba(0,0,0,.12);}
+.btn:hover{filter:brightness(1.02);}
+.iconBtn:hover{background:#f7f2ea;border-color:rgba(122,27,27,.18);}
+.reveal{opacity:0;transform:translateY(14px);transition:opacity .45s ease,transform .45s ease;will-change:opacity,transform;}
+.reveal.show{opacity:1;transform:translateY(0);}
+.grid .card.reveal{transition-delay:var(--d,0ms);}
+html{scroll-behavior:smooth;}
