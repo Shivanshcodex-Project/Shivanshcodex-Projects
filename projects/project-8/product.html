@@ -33,6 +33,7 @@
 <div class="panel" style="padding:0; overflow:hidden;">
   <div style="padding:12px;">
     <div id="pName" style="font-weight:1200;font-size:18px;"></div>
+
     <div style="display:flex;align-items:center;justify-content:space-between;margin-top:8px;">
       <div id="pPrice" style="font-weight:1200;color:var(--maroon);font-size:18px;"></div>
       <div class="tag">Bestseller</div>
@@ -43,24 +44,43 @@
   <img id="mainImg" class="thumb" style="height:320px;object-fit:cover;" alt="Product">
 
   <!-- Thumbnails -->
-  <div id="thumbs" style="display:flex;gap:10px;padding:12px;overflow:auto;"></div>
+  <div id="thumbs" class="thumbsRow" style="display:flex;gap:10px;padding:12px;overflow:auto;"></div>
 
   <div style="padding:12px;">
     <div style="font-weight:1100;margin-bottom:6px;">Product Details</div>
-    <div class="muted" id="pDesc">
-      Premium quality product. Comfortable fit. Best for daily wear.
+    <div class="muted" id="pDesc"></div>
+
+    <!-- ✅ Quantity -->
+    <div class="qtyWrap">
+      <div class="muted" style="font-weight:1000;">Quantity</div>
+      <div class="qtyBox">
+        <button class="qtyBtn" onclick="qtyMinus()">−</button>
+        <div class="qtyNum" id="qtyNum">1</div>
+        <button class="qtyBtn" onclick="qtyPlus()">+</button>
+      </div>
     </div>
 
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px;">
-      <button class="btn btnSoft" onclick="buyNow()">⚡ Buy Now</button>
-      <button class="btn btnPrimary" onclick="addThis()">🛒 Add to Cart</button>
+    <div class="muted" style="margin-top:10px;">
+      ETA: 8 Days • WhatsApp support available
     </div>
   </div>
 </div>
 
-<div class="panel">
-  <h2 class="center">Delivery</h2>
-  <p class="muted center">ETA: 8 Days • WhatsApp support available</p>
+<!-- ✅ Related Products -->
+<div class="sectionHead" style="margin-top:10px;">
+  <h2>Related Products</h2>
+  <span class="badge">You may like</span>
+</div>
+<div class="grid" id="relGrid"></div>
+
+<div class="stickySpacer"></div>
+
+<!-- ✅ Sticky bottom bar -->
+<div class="stickyBar">
+  <div class="stickyBarInner">
+    <button class="btn btnSoft" onclick="buyNow()">⚡ Buy Now</button>
+    <button class="btn btnPrimary" onclick="addThis()">🛒 Add to Cart</button>
+  </div>
 </div>
 
 <script src="js/products.js"></script>
