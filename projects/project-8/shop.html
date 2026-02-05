@@ -25,7 +25,6 @@
     </div>
 
     <div class="rightIcons">
-      <!-- ✅ mini cart open -->
       <button class="iconBtn" onclick="openMiniCart()" aria-label="Cart">🛒</button>
     </div>
   </div>
@@ -37,7 +36,6 @@
   </div>
 </header>
 
-<!-- ✅ Drawer -->
 <div id="drawerRoot">
   <div class="drawerOverlay" onclick="closeDrawer()"></div>
   <aside class="drawer">
@@ -59,30 +57,9 @@
 
 <div class="grid" id="grid"></div>
 
-<!-- ✅ Mini Cart Bottom Sheet (must exist for openMiniCart) -->
-<div class="sheetOverlay" onclick="closeMiniCart()"></div>
-
-<div class="sheet" id="miniCartSheet">
-  <div class="sheetHeader">
-    <div class="sheetTitle">🛒 Cart</div>
-    <button class="sheetClose" onclick="closeMiniCart()">✕</button>
-  </div>
-
-  <div class="sheetBody" id="miniCartBody"></div>
-
-  <div class="sheetFooter">
-    <div class="muted" id="miniCartTotal" style="text-align:center;font-weight:1100;">
-      Total: ₹0
-    </div>
-    <button class="sheetOpenBtn" onclick="location.href='cart.html'">Open Cart</button>
-    <button class="sheetSoftBtn" onclick="closeMiniCart()">Continue Shopping</button>
-  </div>
-</div>
-
 <script src="js/products.js"></script>
 <script src="js/cart.js"></script>
 <script src="js/ui.js"></script>
-
 <script>
   function openDrawer(){ document.body.classList.add("drawerOpen"); }
   function closeDrawer(){ document.body.classList.remove("drawerOpen"); }
@@ -90,43 +67,34 @@
   const grid = document.getElementById("grid");
   const q = document.getElementById("q");
 
-  const saved = localStorage.getItem("shopSearch");
-  if(saved){ q.value = saved; localStorage.removeItem("shopSearch"); }
-
   function render(){
     const term = q.value.trim().toLowerCase();
-    const list = window.products || [];
-
     grid.innerHTML = "";
 
-    (list || [])
-      .filter(p => !term || (p.name || "").toLowerCase().includes(term))
+    (products || [])
+      .filter(p => !term || p.name.toLowerCase().includes(term))
       .forEach(p=>{
         grid.innerHTML += `
           <div class="card">
             <a href="product.html?id=${p.id}">
               <img class="thumb" src="images/${p.folder}/1.jpg" alt="${p.name}">
             </a>
-
             <div class="cardBody">
-              <a href="product.html?id=${p.id}" style="display:block">
+              <a href="product.html?id=${p.id}" style="display:block;text-decoration:none;color:inherit">
                 <div class="cardTitle">${p.name}</div>
               </a>
-
               <div class="priceRow">
                 <div class="price">₹${p.price}</div>
                 <div class="tag">Bestseller</div>
               </div>
-
               <button class="btn btnPrimary" onclick="addToCart('${p.id}')">Add to Cart</button>
             </div>
           </div>
         `;
       });
   }
-
   render();
 </script>
-
+<script src="js/animate.js"></script>
 </body>
 </html>
