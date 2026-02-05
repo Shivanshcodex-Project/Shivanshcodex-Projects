@@ -14,7 +14,7 @@
 
 <header class="header">
   <div class="headerRow container">
-    <button class="iconBtn" onclick="openDrawer()">☰</button>
+    <button class="iconBtn" onclick="history.back()">←</button>
     <div class="brand">
       <div class="logoDot"></div>
       <div>
@@ -23,52 +23,43 @@
       </div>
     </div>
     <div class="rightIcons">
-      <button class="iconBtn" onclick="openMiniCart()" aria-label="Cart">🛒</button>
+      <button class="iconBtn" onclick="openMiniCart()">🛒</button>
     </div>
   </div>
 </header>
 
-<div id="drawerRoot">
-  <div class="drawerOverlay" onclick="closeDrawer()"></div>
-  <aside class="drawer">
-    <div class="drawerHeader">Menu</div>
-    <div class="drawerLinks">
-      <a href="index.html">Home <span>›</span></a>
-      <a href="shop.html">Shop <span>›</span></a>
-      <a href="track.html">Order Tracking <span>›</span></a>
-      <a href="customer-care.html">Customer Care <span>›</span></a>
-      <a href="return-policy.html">Return Policy <span>›</span></a>
-    </div>
-  </aside>
-</div>
-
 <div class="panel">
-  <h2 class="center" style="margin-bottom:6px;">Return & Exchange</h2>
+  <h2 class="center">Return & Exchange</h2>
   <p class="muted center">Please read carefully</p>
 
-  <div class="card" style="padding:12px;margin-top:10px;">
+  <div class="panel" style="margin:0;margin-top:10px;">
     <b>✅ Return Window</b>
     <div class="muted">Delivery ke 2 days ke andar request.</div>
   </div>
 
-  <div class="card" style="padding:12px;margin-top:10px;">
+  <div class="panel" style="margin:0;margin-top:10px;">
     <b>✅ Conditions</b>
     <div class="muted">Product unused, original packing, tags intact.</div>
   </div>
 
-  <div class="card" style="padding:12px;margin-top:10px;">
+  <div class="panel" style="margin:0;margin-top:10px;">
     <b>❌ Non-returnable</b>
-    <div class="muted">Damaged by user / wrong size chosen / sale items (optional).</div>
+    <div class="muted">Damaged by user / wrong size chosen / sale items.</div>
   </div>
 
-  <a class="btn btnPrimary" href="https://wa.me/584268849301" target="_blank">📞 Request Return on WhatsApp</a>
+  <button class="btn btnPrimary" onclick="openWA()">📞 Request Return on WhatsApp</button>
 </div>
 
+<script src="js/products.js"></script>
+<script src="js/cart.js"></script>
 <script src="js/ui.js"></script>
 <script>
-  function openDrawer(){ document.body.classList.add("drawerOpen"); }
-  function closeDrawer(){ document.body.classList.remove("drawerOpen"); }
+  function openWA(){
+    const text = "Hi, I want to request return/exchange. My Order ID is: ";
+    const wa = `https://wa.me/584268849301?text=${encodeURIComponent(text)}`;
+    window.open(wa,"_blank");
+  }
 </script>
-
+<script src="js/animate.js"></script>
 </body>
 </html>
