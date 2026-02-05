@@ -1,26 +1,67 @@
+const CART_KEY = "cart_v1";
+
 function getCart(){
-  return JSON.parse(localStorage.getItem("cart")) || [];
+  try{
+    return JSON.parse(localStorage.getItem(CART_KEY)) || {};
+  }catch(e){ return {}; }
 }
-function saveCart(c){
-  localStorage.setItem("cart", JSON.stringify(c));
+function setCart(obj){
+  localStorage.setItem(CART_KEY, JSON.stringify(obj));
+}
+function money(n){ return "₹" + Number(n||0); }
+
+function findProduct(id){
+  return (window.products || []).find(p=>p.id===id);
 }
 
 function addToCart(id){
   const cart = getCart();
-  const p = (window.products || window.PRODUCTS || []).find(x => x.id === id);
-  if(!p){
-    if(window.toast) toast("Product not found");
-    return;
-  }
-  cart.push(p);
-  saveCart(cart);
-  if(window.toast) toast("Added to cart");
+  cart[id] = (cart[id] || 0) + 1;
+  setCart(cart);
+  if(window.toast) toast("✅ Added to cart");
+  if(window.renderMiniCart) renderMiniCart();
 }
 
-function removeCartItem(index){
+function decFromCart(id){
   const cart = getCart();
-  cart.splice(index,1);
-  saveCart(cart);
-  if(window.toast) toast("Removed");
-  location.reload();
+  if(!cart[id]) return;
+  cart[id]--;
+  if(cart[id] <= 0) delete cart[id];
+  setCart(cart);
+  if(window.renderMiniCart) renderMiniCart();
 }
+
+function removeItem(id){
+  const cart = getCart();
+  delete cart[id];
+  setCart(cart);
+  if(window.renderMiniCart) renderMiniCart();
+}
+
+function clearCart(){
+  setCart({});
+  if(window.renderMiniCart) renderMiniCart();
+}
+
+function cartItems(){
+  const cart = getCart();
+  const items = [];
+  Object.keys(cart).forEach(id=>{
+    const p = findProduct(id);
+    if(p) items.push({ ...p, qty: cart[id] });
+  });
+  return items;
+}
+
+function cartTotal(){
+  return cartItems().reduce((sum,it)=> sum + it.price*it.qty, 0);
+}
+
+// expose
+window.addToCart = addToCart;
+window.decFromCart = decFromCart;
+window.removeItem = removeItem;
+window.clearCart = clearCart;
+window.cartItems = cartItems;
+window.cartTotal = cartTotal;
+window.money = money;
