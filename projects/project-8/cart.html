@@ -14,8 +14,7 @@
 
 <header class="header">
   <div class="headerRow container">
-    <button class="iconBtn" onclick="openDrawer()">☰</button>
-
+    <button class="iconBtn" onclick="history.back()">←</button>
     <div class="brand">
       <div class="logoDot"></div>
       <div>
@@ -23,78 +22,79 @@
         <div style="font-size:12px;color:#777;font-weight:900;margin-top:-2px">Your selected items</div>
       </div>
     </div>
-
     <div class="rightIcons">
-      <button class="iconBtn" onclick="openMiniCart()" aria-label="Cart">🛒</button>
+      <button class="iconBtn" onclick="openMiniCart()">🛒</button>
     </div>
   </div>
 </header>
 
-<div id="drawerRoot">
-  <div class="drawerOverlay" onclick="closeDrawer()"></div>
-  <aside class="drawer">
-    <div class="drawerHeader">Menu</div>
-    <div class="drawerLinks">
-      <a href="index.html">Home <span>›</span></a>
-      <a href="shop.html">Shop <span>›</span></a>
-      <a href="track.html">Order Tracking <span>›</span></a>
-      <a href="customer-care.html">Customer Care <span>›</span></a>
-      <a href="return-policy.html">Return Policy <span>›</span></a>
-    </div>
-  </aside>
-</div>
-
 <div class="panel">
   <h2 class="center">🛒 Your Cart</h2>
   <p class="muted center">Remove items or proceed to payment</p>
+  <div id="cartList" style="display:grid;gap:10px;margin-top:10px;"></div>
+  <div class="total" id="total"></div>
 
-  <div id="cartItems" style="margin-top:12px;display:grid;gap:12px;"></div>
-
-  <div class="total" id="total">Total Amount: ₹0</div>
-
-  <a class="btn btnPrimary" id="goPay" href="payment.html">💳 Proceed to Payment</a>
-  <a class="btn btnSoft" href="shop.html">⬅️ Back to Shop</a>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px;">
+    <button class="btn btnPrimary" onclick="goPay()">💳 Proceed to Payment</button>
+    <a class="btn btnSoft" href="shop.html">⬅ Back to Shop</a>
+  </div>
 </div>
 
 <script src="js/products.js"></script>
 <script src="js/cart.js"></script>
 <script src="js/ui.js"></script>
 <script>
-  function openDrawer(){ document.body.classList.add("drawerOpen"); }
-  function closeDrawer(){ document.body.classList.remove("drawerOpen"); }
+  const listEl = document.getElementById("cartList");
+  const totalEl = document.getElementById("total");
 
-  const box = document.getElementById("cartItems");
-  const cart = getCart();
-  let sum = 0;
-
-  if(cart.length === 0){
-    box.innerHTML = `
-      <div class="card" style="padding:12px;">
-        <b>Cart is empty</b>
-        <div class="muted">Shop se product add karo.</div>
-      </div>
-    `;
-    document.getElementById("goPay").style.display = "none";
-  } else {
-    cart.forEach((item, i) => {
-      sum += Number(item.price || 0);
-      box.innerHTML += `
-        <div class="card">
-          <img class="thumb" src="images/${item.folder}/1.jpg" alt="${item.name}">
-          <div class="cardBody">
-            <div class="cardTitle">${item.name}</div>
-            <div class="priceRow">
-              <div class="price">₹${item.price}</div>
-              <div class="tag">In Cart</div>
-            </div>
-            <button class="btn btnDanger" onclick="removeCartItem(${i})">❌ Remove</button>
-          </div>
+  function renderCart(){
+    const items = cartItems();
+    if(items.length===0){
+      listEl.innerHTML = `
+        <div class="panel center">
+          <b>Cart is empty</b>
+          <div class="muted">Shop se product add karo.</div>
         </div>
       `;
-    });
-  }
-  document.getElementById("total").innerText = "Total Amount: ₹" + sum;
-</script>
+      totalEl.textContent = "Total Amount: ₹0";
+      return;
+    }
 
+    listEl.innerHTML = items.map(it=>`
+      <div class="panel" style="margin:0;">
+        <div style="display:flex;gap:10px;align-items:center;">
+          <img src="images/${it.folder}/1.jpg" alt="${it.name}" style="width:78px;height:78px;object-fit:cover;border-radius:14px;border:1px solid rgba(0,0,0,.08)">
+          <div style="flex:1">
+            <div style="font-weight:1100">${it.name}</div>
+            <div class="muted">${money(it.price)} • Qty: ${it.qty}</div>
+            <div style="display:flex;gap:8px;margin-top:8px;">
+              <button class="iconBtn" onclick="decFromCart('${it.id}')" title="Minus">−</button>
+              <button class="iconBtn" onclick="addToCart('${it.id}')" title="Plus">+</button>
+              <button class="btn btnDanger" style="margin-top:0" onclick="removeItem('${it.id}');renderCart()">✖ Remove</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    `).join("");
+
+    totalEl.textContent = "Total Amount: " + money(cartTotal());
+  }
+
+  function goPay(){
+    if(cartItems().length===0){ toast("Cart empty"); return; }
+    location.href = "payment.html";
+  }
+
+  // re-render when cart updates
+  const oldAdd = window.addToCart;
+  window.addToCart = function(id){ oldAdd(id); renderCart(); }
+  const oldDec = window.decFromCart;
+  window.decFromCart = function(id){ oldDec(id); renderCart(); }
+  const oldRem = window.removeItem;
+  window.removeItem = function(id){ oldRem(id); renderCart(); }
+
+  renderCart();
+</script>
+<script src="js/animate.js"></script>
 </body>
 </html>
