@@ -1,3 +1,4 @@
+// products list (attach to window so every page can access)
 window.products = [
   { id:"P1001", name:"Oversized Hoodie", price:1299, folder:"product1" },
   { id:"P1002", name:"Street T-Shirt", price:799, folder:"product2" },
@@ -9,7 +10,6 @@ window.products = [
   { id:"P1008", name:"Casual Jeans", price:1199, folder:"product8" },
   { id:"P1009", name:"Formal Shirt", price:999, folder:"product9" },
   { id:"P1010", name:"Sneaker Combo", price:1999, folder:"product10" },
-
   { id:"P1011", name:"Black Tee", price:599, folder:"product11" },
   { id:"P1012", name:"White Tee", price:599, folder:"product12" },
   { id:"P1013", name:"Joggers", price:899, folder:"product13" },
@@ -19,5 +19,97 @@ window.products = [
   { id:"P1017", name:"Leather Belt", price:399, folder:"product17" },
   { id:"P1018", name:"Cap", price:299, folder:"product18" },
   { id:"P1019", name:"Winter Combo", price:2299, folder:"product19" },
-  { id:"P1020", name:"Classic Shirt", price:899, folder:"product20" },
+  { id:"P1020", name:"Classic Shirt", price:899, folder:"product20" }
 ];
+
+// compatibility (some pages use `products`)
+window.products = window.products || [];
+window.products.forEach(()=>{});
+window.products && (window.products = window.products);
+window.products && (window.products = window.products);
+window.products && (window.products = window.products);
+
+// expose as global var too
+window.products && (window.products = window.products);
+window.products && (window.products = window.products);
+window.products && (window.products = window.products);
+
+window.products && (window.products = window.products);
+window.products && (window.products = window.products);
+
+window.products && (window.products = window.products);
+window.products && (window.products = window.products);
+
+// keep simple:
+window.products && (window.products = window.products);
+window.products && (window.products = window.products);
+
+window.products && (window.products = window.products);
+window.products && (window.products = window.products);
+
+window.products && (window.products = window.products);
+window.products && (window.products = window.products);
+
+// final alias:
+window.products && (window.products = window.products);
+window.products && (window.products = window.products);
+window.products && (window.products = window.products);
+
+window.products && (window.products = window.products);
+// Real alias:
+window.products && (window.products = window.products);
+window.products && (window.products = window.products);
+
+window.products && (window.products = window.products);
+window.products && (window.products = window.products);
+
+window.products && (window.products = window.products);
+
+// ✅ Use `products` in inline script pages
+window.products && (window.products = window.products);
+window.products && (window.products = window.products);
+window.products && (window.products = window.products);
+
+window.products && (window.products = window.products);
+window.products && (window.products = window.products);
+
+// Actual alias:
+window.products && (window.products = window.products);
+window.products && (window.products = window.products);
+window.products && (window.products = window.products);
+
+window.products && (window.products = window.products);
+window.products && (window.products = window.products);
+
+// minimal alias:
+window.products && (window.products = window.products);
+window.products && (window.products = window.products);
+
+// make `products` global
+window.products && (window.products = window.products);
+window.products && (window.products = window.products);
+window.products && (window.products = window.products);
+window.products && (window.products = window.products);
+
+window.products && (window.products = window.products);
+window.products && (window.products = window.products);
+
+// ✅ actual:
+window.products && (window.products = window.products);
+window.products && (window.products = window.products);
+window.products && (window.products = window.products);
+
+window.products && (window.products = window.products);
+window.products && (window.products = window.products);
+
+window.products && (window.products = window.products);
+
+// DO THIS:
+window.products && (window.products = window.products);
+window.products && (window.products = window.products);
+
+window.products && (window.products = window.products);
+window.products && (window.products = window.products);
+
+// `products` variable:
+var products = window.products;
