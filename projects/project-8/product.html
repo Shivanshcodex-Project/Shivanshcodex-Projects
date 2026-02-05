@@ -33,24 +33,25 @@
 <div class="panel" style="padding:0; overflow:hidden;">
   <div style="padding:12px;">
     <div id="pName" style="font-weight:1200;font-size:18px;"></div>
-
     <div style="display:flex;align-items:center;justify-content:space-between;margin-top:8px;">
       <div id="pPrice" style="font-weight:1200;color:var(--maroon);font-size:18px;"></div>
       <div class="tag">Bestseller</div>
     </div>
   </div>
 
-  <!-- Main Image -->
-  <img id="mainImg" class="thumb" style="height:320px;object-fit:cover;" alt="Product">
+  <!-- ✅ Slider -->
+  <div class="slider" id="slider">
+    <div class="slideTrack" id="slideTrack"></div>
+    <div class="dots" id="dots"></div>
+  </div>
 
-  <!-- Thumbnails -->
-  <div id="thumbs" class="thumbsRow" style="display:flex;gap:10px;padding:12px;overflow:auto;"></div>
+  <!-- thumbs -->
+  <div id="thumbs" style="display:flex;gap:10px;padding:12px;overflow:auto;"></div>
 
   <div style="padding:12px;">
     <div style="font-weight:1100;margin-bottom:6px;">Product Details</div>
     <div class="muted" id="pDesc"></div>
 
-    <!-- ✅ Quantity -->
     <div class="qtyWrap">
       <div class="muted" style="font-weight:1000;">Quantity</div>
       <div class="qtyBox">
@@ -66,7 +67,6 @@
   </div>
 </div>
 
-<!-- ✅ Related Products -->
 <div class="sectionHead" style="margin-top:10px;">
   <h2>Related Products</h2>
   <span class="badge">You may like</span>
@@ -75,7 +75,6 @@
 
 <div class="stickySpacer"></div>
 
-<!-- ✅ Sticky bottom bar -->
 <div class="stickyBar">
   <div class="stickyBarInner">
     <button class="btn btnSoft" onclick="buyNow()">⚡ Buy Now</button>
@@ -87,5 +86,6 @@
 <script src="js/cart.js"></script>
 <script src="js/ui.js"></script>
 <script src="js/product.js"></script>
+<script src="js/animate.js"></script>
 </body>
 </html>
