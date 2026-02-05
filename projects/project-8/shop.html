@@ -57,9 +57,28 @@
 
 <div class="grid" id="grid"></div>
 
+<!-- ✅ Mini Cart Bottom Sheet (MUST be on every page where cart icon exists) -->
+<div class="sheetOverlay" onclick="closeMiniCart()"></div>
+
+<div class="sheet" id="miniCartSheet">
+  <div class="sheetHeader">
+    <div class="sheetTitle">🛒 Your Cart</div>
+    <button class="sheetClose" onclick="closeMiniCart()">✕</button>
+  </div>
+
+  <div class="sheetBody" id="miniCartBody"></div>
+
+  <div class="sheetFooter">
+    <div class="total" id="miniCartTotal">Total: ₹0</div>
+    <button class="sheetOpenBtn" onclick="location.href='cart.html'">Open Cart</button>
+    <button class="sheetSoftBtn" onclick="closeMiniCart()">Continue Shopping</button>
+  </div>
+</div>
+
 <script src="js/products.js"></script>
 <script src="js/cart.js"></script>
 <script src="js/ui.js"></script>
+
 <script>
   function openDrawer(){ document.body.classList.add("drawerOpen"); }
   function closeDrawer(){ document.body.classList.remove("drawerOpen"); }
@@ -67,11 +86,13 @@
   const grid = document.getElementById("grid");
   const q = document.getElementById("q");
 
+  const saved = localStorage.getItem("shopSearch");
+  if(saved){ q.value = saved; localStorage.removeItem("shopSearch"); }
+
   function render(){
     const term = q.value.trim().toLowerCase();
     grid.innerHTML = "";
-
-    (products || [])
+    (products||[])
       .filter(p => !term || p.name.toLowerCase().includes(term))
       .forEach(p=>{
         grid.innerHTML += `
@@ -79,15 +100,18 @@
             <a href="product.html?id=${p.id}">
               <img class="thumb" src="images/${p.folder}/1.jpg" alt="${p.name}">
             </a>
+
             <div class="cardBody">
-              <a href="product.html?id=${p.id}" style="display:block;text-decoration:none;color:inherit">
+              <a href="product.html?id=${p.id}" style="display:block">
                 <div class="cardTitle">${p.name}</div>
               </a>
+
               <div class="priceRow">
                 <div class="price">₹${p.price}</div>
                 <div class="tag">Bestseller</div>
               </div>
-              <button class="btn btnPrimary" onclick="addToCart('${p.id}')">Add to Cart</button>
+
+              <button class="btn btnPrimary" onclick="addToCart('${p.id}', 1)">Add to Cart</button>
             </div>
           </div>
         `;
@@ -95,6 +119,6 @@
   }
   render();
 </script>
-<script src="js/animate.js"></script>
+
 </body>
 </html>
