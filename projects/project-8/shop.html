@@ -60,6 +60,7 @@
 <script src="js/products.js"></script>
 <script src="js/cart.js"></script>
 <script src="js/ui.js"></script>
+
 <script>
   function openDrawer(){ document.body.classList.add("drawerOpen"); }
   function closeDrawer(){ document.body.classList.remove("drawerOpen"); }
@@ -73,24 +74,41 @@
   function render(){
     const term = q.value.trim().toLowerCase();
     grid.innerHTML = "";
-    (products||[])
+
+    (products || [])
       .filter(p => !term || p.name.toLowerCase().includes(term))
       .forEach(p=>{
         grid.innerHTML += `
           <div class="card">
-            <img class="thumb" src="images/${p.folder}/1.jpg" alt="${p.name}">
+
+            <!-- ✅ IMAGE CLICK → PRODUCT DETAILS PAGE -->
+            <a href="product.html?id=${p.id}">
+              <img class="thumb" src="images/${p.folder}/1.jpg" alt="${p.name}">
+            </a>
+
             <div class="cardBody">
-              <div class="cardTitle">${p.name}</div>
+
+              <!-- ✅ NAME CLICK → PRODUCT DETAILS PAGE -->
+              <a href="product.html?id=${p.id}" style="display:block;text-decoration:none;color:inherit">
+                <div class="cardTitle">${p.name}</div>
+              </a>
+
               <div class="priceRow">
                 <div class="price">₹${p.price}</div>
                 <div class="tag">Bestseller</div>
               </div>
-              <button class="btn btnPrimary" onclick="addToCart('${p.id}')">Add to Cart</button>
+
+              <!-- ✅ ADD TO CART SAME AS BEFORE -->
+              <button class="btn btnPrimary" onclick="addToCart('${p.id}')">
+                Add to Cart
+              </button>
             </div>
+
           </div>
         `;
       });
   }
+
   render();
 </script>
 
