@@ -313,3 +313,42 @@ button:active, .btn:active, .iconBtn:active{ transform: scale(.98); filter: brig
 
 body.sheetOpen .sheetOverlay{ opacity:1; pointer-events:auto; }
 body.sheetOpen .sheet{ transform:translateY(0); }
+
+
+/* ===== Product page: Qty + Sticky bar + Thumbs ===== */
+.qtyWrap{
+  display:flex;align-items:center;justify-content:space-between;
+  gap:10px;margin-top:12px;
+}
+.qtyBox{
+  display:flex;align-items:center;gap:10px;
+  background:#fff;border:1px solid var(--border);
+  border-radius:16px;padding:10px 12px;
+}
+.qtyBtn{
+  width:42px;height:42px;border-radius:14px;
+  border:1px solid var(--border);
+  background:#f4efe6;color:var(--maroon);
+  font-weight:1200;cursor:pointer;
+  display:grid;place-items:center;
+}
+.qtyNum{ min-width:30px;text-align:center;font-weight:1200; }
+
+.thumbsRow img{
+  width:72px;height:72px;object-fit:cover;
+  border-radius:14px;border:1px solid rgba(0,0,0,.10);
+}
+
+.stickyBar{
+  position:fixed;left:0;right:0;bottom:0;
+  background:#fff;
+  border-top:1px solid var(--border);
+  box-shadow:0 -18px 45px rgba(0,0,0,.12);
+  padding:10px;
+  z-index:160;
+}
+.stickyBarInner{
+  max-width:1100px;margin:0 auto;
+  display:grid;grid-template-columns:1fr 1fr;gap:10px;
+}
+.stickySpacer{height:80px;} /* page content bottom se cover na ho */
