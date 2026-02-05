@@ -45,7 +45,7 @@
     <div class="dots" id="dots"></div>
   </div>
 
-  <!-- thumbs -->
+  <!-- ✅ Thumbs -->
   <div id="thumbs" style="display:flex;gap:10px;padding:12px;overflow:auto;"></div>
 
   <div style="padding:12px;">
@@ -61,6 +61,12 @@
       </div>
     </div>
 
+    <!-- ✅ NEW: Buttons under Quantity -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px;">
+      <button class="btn btnSoft" style="margin-top:0" onclick="buyNow()">⚡ Buy Now</button>
+      <button class="btn btnPrimary" style="margin-top:0" onclick="addThis()">🛒 Add to Cart</button>
+    </div>
+
     <div class="muted" style="margin-top:10px;">
       ETA: 8 Days • WhatsApp support available
     </div>
@@ -73,6 +79,7 @@
 </div>
 <div class="grid" id="relGrid"></div>
 
+<!-- ✅ Keep sticky bar also -->
 <div class="stickySpacer"></div>
 
 <div class="stickyBar">
