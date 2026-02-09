@@ -6,31 +6,31 @@
     "url": "./projects/project-1/index.html"
   },
   {
-    "title": "Project 2 - Network Info Tool",
-    "desc": "Displays network status, speed hints and connection details",
+    "title": "Project 2 - Coming soon🥷🏻",
+    "desc": "Under process",
     "tag": "tool",
     "url": "./projects/project-2/index.html"
   },
   {
-    "title": "Project 3 - College Mini Project",
-    "desc": "Custom college project with separate UI and logic",
-    "tag": "college",
+    "title": "Project 3 - NeuroSpine Game",
+    "desc": "A minimalist dark game where a living creature made of code moves organically in a void-like world.",
+    "tag": "Game",
     "url": "./projects/project-3/index.html"
   },
   {
-    "title": "Project 4 - Login System Demo",
-    "desc": "Username & password based authentication demo",
-    "tag": "auth",
+    "title": "Project 4 - Love Heart effect",
+    "desc": "Line makeing a heart",
+    "tag": "Effect",
     "url": "./projects/project-4/index.html"
   },
   {
-    "title": "Project 5 - Cyber Awareness Page",
-    "desc": "Explains what data websites can and cannot access",
-    "tag": "security",
+    "title": "Project 5 - 3DHand-Gesture Particle System",
+    "desc": "A real-time hand gesture game that transforms finger movements into beautiful 3D particle shapes",
+    "tag": "hand detect",
     "url": "./projects/project-5/index.html"
   },
   {
-    "title": "Project 6 - UI/UX Showcase",
+    "title": "Project 6 - Mini Gta Hand",
     "desc": "Premium UI components, cards, buttons and animations",
     "tag": "ui",
     "url": "./projects/project-6/index.html"
