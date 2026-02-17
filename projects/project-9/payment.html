@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Payment - ShopEase</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="header-top">
+      <button class="menu-toggle" onclick="toggleMobileNav()" aria-label="Open menu">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+      </button>
+      
+      <a href="index.html" class="logo">
+        <span class="logo-text">ShopEase</span>
+        <span class="logo-tagline">Explore <span>Plus</span></span>
+      </a>
+      
+      <div class="search-bar">
+        <form class="search-input-wrapper" onsubmit="handleSearch(event)">
+          <input type="text" class="search-input" placeholder="Search for products, brands and more..." id="searchInput">
+          <button type="submit" class="search-btn" aria-label="Search">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"></circle>
+              <path d="m21 21-4.35-4.35"></path>
+            </svg>
+          </button>
+        </form>
+      </div>
+      
+      <div class="header-actions">
+        <a href="orders.html" class="header-btn" aria-label="Orders">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
+            <line x1="16" y1="13" x2="8" y2="13"></line>
+            <line x1="16" y1="17" x2="8" y2="17"></line>
+            <polyline points="10 9 9 9 8 9"></polyline>
+          </svg>
+          <span>Orders</span>
+        </a>
+      </div>
+    </div>
+    
+    <!-- Mobile Search -->
+    <div class="mobile-search">
+      <form class="search-input-wrapper" onsubmit="handleSearch(event)">
+        <input type="text" class="search-input" placeholder="Search for products, brands and more..." id="mobileSearchInput">
+        <button type="submit" class="search-btn" aria-label="Search">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8"></circle>
+            <path d="m21 21-4.35-4.35"></path>
+          </svg>
+        </button>
+      </form>
+    </div>
+  </header>
+  
+  <!-- Mobile Navigation -->
+  <div class="mobile-nav-overlay" id="mobileNavOverlay" onclick="toggleMobileNav()"></div>
+  <nav class="mobile-nav" id="mobileNav">
+    <div class="mobile-nav-header">
+      <span class="logo-text" style="color: white;">ShopEase</span>
+      <button class="mobile-nav-close" onclick="toggleMobileNav()" aria-label="Close menu">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+    <div class="mobile-nav-links">
+      <a href="index.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+          <polyline points="9 22 9 12 15 12 15 22"></polyline>
+        </svg>
+        Home
+      </a>
+      <a href="shop.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <path d="M16 10a4 4 0 0 1-8 0"></path>
+        </svg>
+        Shop
+      </a>
+      <a href="cart.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <path d="M16 10a4 4 0 0 1-8 0"></path>
+        </svg>
+        Cart
+      </a>
+      <a href="orders.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+          <polyline points="14 2 14 8 20 8"></polyline>
+          <line x1="16" y1="13" x2="8" y2="13"></line>
+          <line x1="16" y1="17" x2="8" y2="17"></line>
+          <polyline points="10 9 9 9 8 9"></polyline>
+        </svg>
+        My Orders
+      </a>
+      <a href="support.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+          <line x1="12" y1="17" x2="12.01" y2="17"></line>
+        </svg>
+        Help & Support
+      </a>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="page-transition payment-container">
+    <div class="payment-card">
+      <div class="payment-header">
+        <h2>Complete Your Payment</h2>
+        <p>Scan the QR code or use UPI to pay</p>
+      </div>
+      
+      <div class="payment-amount" id="paymentAmount">
+        ₹0
+      </div>
+      
+      <div class="qr-section">
+        <div class="qr-code">
+          <svg viewBox="0 0 200 200" width="200" height="200">
+            <!-- QR Code Pattern -->
+            <rect x="0" y="0" width="200" height="200" fill="white"/>
+            <!-- Position Detection Patterns -->
+            <rect x="10" y="10" width="50" height="50" fill="black"/>
+            <rect x="20" y="20" width="30" height="30" fill="white"/>
+            <rect x="30" y="30" width="10" height="10" fill="black"/>
+            
+            <rect x="140" y="10" width="50" height="50" fill="black"/>
+            <rect x="150" y="20" width="30" height="30" fill="white"/>
+            <rect x="160" y="30" width="10" height="10" fill="black"/>
+            
+            <rect x="10" y="140" width="50" height="50" fill="black"/>
+            <rect x="20" y="150" width="30" height="30" fill="white"/>
+            <rect x="30" y="160" width="10" height="10" fill="black"/>
+            
+            <!-- Data Modules (simplified pattern) -->
+            <rect x="70" y="10" width="10" height="10" fill="black"/>
+            <rect x="90" y="10" width="10" height="10" fill="black"/>
+            <rect x="110" y="10" width="10" height="10" fill="black"/>
+            <rect x="70" y="30" width="10" height="10" fill="black"/>
+            <rect x="100" y="30" width="10" height="10" fill="black"/>
+            <rect x="120" y="30" width="10" height="10" fill="black"/>
+            
+            <rect x="10" y="70" width="10" height="10" fill="black"/>
+            <rect x="30" y="70" width="10" height="10" fill="black"/>
+            <rect x="50" y="70" width="10" height="10" fill="black"/>
+            <rect x="10" y="90" width="10" height="10" fill="black"/>
+            <rect x="40" y="90" width="10" height="10" fill="black"/>
+            <rect x="60" y="90" width="10" height="10" fill="black"/>
+            
+            <rect x="70" y="70" width="60" height="60" fill="black"/>
+            <rect x="80" y="80" width="40" height="40" fill="white"/>
+            <rect x="90" y="90" width="20" height="20" fill="black"/>
+            
+            <rect x="140" y="70" width="10" height="10" fill="black"/>
+            <rect x="160" y="70" width="10" height="10" fill="black"/>
+            <rect x="180" y="70" width="10" height="10" fill="black"/>
+            <rect x="150" y="90" width="10" height="10" fill="black"/>
+            <rect x="170" y="90" width="10" height="10" fill="black"/>
+            
+            <rect x="70" y="140" width="10" height="10" fill="black"/>
+            <rect x="90" y="140" width="10" height="10" fill="black"/>
+            <rect x="110" y="140" width="10" height="10" fill="black"/>
+            <rect x="80" y="160" width="10" height="10" fill="black"/>
+            <rect x="100" y="160" width="10" height="10" fill="black"/>
+            <rect x="120" y="160" width="10" height="10" fill="black"/>
+            
+            <rect x="140" y="140" width="10" height="10" fill="black"/>
+            <rect x="160" y="140" width="10" height="10" fill="black"/>
+            <rect x="180" y="140" width="10" height="10" fill="black"/>
+            <rect x="150" y="160" width="10" height="10" fill="black"/>
+            <rect x="170" y="160" width="10" height="10" fill="black"/>
+            <rect x="140" y="180" width="10" height="10" fill="black"/>
+            <rect x="180" y="180" width="10" height="10" fill="black"/>
+          </svg>
+        </div>
+        
+        <div class="upi-id">
+          Pay using UPI ID: <strong>kundan2829@alx</strong>
+        </div>
+      </div>
+      
+      <div class="payment-instructions">
+        <h4>How to pay:</h4>
+        <ol>
+          <li>Open any UPI app (Google Pay, PhonePe, Paytm, etc.)</li>
+          <li>Scan the QR code above or enter UPI ID: <strong>kundan2829@alx</strong></li>
+          <li>Enter the exact amount shown above</li>
+          <li>Complete the payment in your UPI app</li>
+          <li>Click "I Have Paid" button below</li>
+        </ol>
+      </div>
+      
+      <button class="pay-btn" id="payBtn" onclick="confirmPayment()">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 8px;">
+          <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+          <polyline points="22 4 12 14.01 9 11.01"></polyline>
+        </svg>
+        I Have Paid
+      </button>
+      
+      <p style="text-align: center; margin-top: 16px; font-size: 0.85rem; color: var(--gray-500);">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: middle; margin-right: 4px;">
+          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+          <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+        </svg>
+        Your payment is secured with 256-bit encryption
+      </p>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-top">
+      <div class="footer-grid">
+        <div class="footer-column">
+          <h4>About</h4>
+          <ul>
+            <li><a href="support.html">Contact Us</a></li>
+            <li><a href="#">About Us</a></li>
+            <li><a href="#">Careers</a></li>
+            <li><a href="#">Press</a></li>
+          </ul>
+        </div>
+        <div class="footer-column">
+          <h4>Help</h4>
+          <ul>
+            <li><a href="support.html">Payments</a></li>
+            <li><a href="support.html">Shipping</a></li>
+            <li><a href="support.html">Returns</a></li>
+            <li><a href="support.html">FAQ</a></li>
+          </ul>
+        </div>
+        <div class="footer-column">
+          <h4>Policy</h4>
+          <ul>
+            <li><a href="#">Return Policy</a></li>
+            <li><a href="#">Terms of Use</a></li>
+            <li><a href="#">Security</a></li>
+            <li><a href="#">Privacy</a></li>
+          </ul>
+        </div>
+        <div class="footer-column">
+          <h4>Social</h4>
+          <ul>
+            <li><a href="#">Facebook</a></li>
+            <li><a href="#">Twitter</a></li>
+            <li><a href="#">YouTube</a></li>
+            <li><a href="#">Instagram</a></li>
+          </ul>
+        </div>
+        <div class="footer-column">
+          <h4>Mail Us</h4>
+          <p>ShopEase Internet Private Limited,<br>Buildings Alyssa, Begonia &<br>Clove Embassy Tech Village,<br>Bengaluru, 560103</p>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2024 ShopEase. All Rights Reserved.</p>
+    </div>
+  </footer>
+
+  <!-- Toast Container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- Scripts -->
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    let checkoutData = null;
+    
+    // Initialize payment page
+    document.addEventListener('DOMContentLoaded', function() {
+      updateCartCount();
+      loadPaymentData();
+    });
+    
+    // Load payment data
+    function loadPaymentData() {
+      checkoutData = JSON.parse(localStorage.getItem('checkoutData'));
+      
+      if (!checkoutData) {
+        window.location.href = 'cart.html';
+        return;
+      }
+      
+      document.getElementById('paymentAmount').textContent = formatPrice(checkoutData.total);
+    }
+    
+    // Confirm payment
+    function confirmPayment() {
+      const btn = document.getElementById('payBtn');
+      btn.disabled = true;
+      btn.innerHTML = `
+        <div class="spinner" style="width: 20px; height: 20px; border-width: 2px; margin-right: 8px;"></div>
+        Processing...
+      `;
+      
+      // Simulate payment processing
+      setTimeout(() => {
+        createOrder();
+      }, 2000);
+    }
+    
+    // Create order
+    function createOrder() {
+      const cart = JSON.parse(localStorage.getItem('cart')) || [];
+      const address = JSON.parse(localStorage.getItem('currentAddress')) || {};
+      
+      // Generate order ID
+      const orderId = 'ORD' + Date.now();
+      
+      // Create order object
+      const order = {
+        id: orderId,
+        date: new Date().toISOString(),
+        items: cart.map(item => {
+          const product = getProductById(item.id);
+          return {
+            id: item.id,
+            title: product.title,
+            image: product.images[0],
+            price: product.price,
+            quantity: item.quantity
+          };
+        }),
+        total: checkoutData.total,
+        status: 'confirmed',
+        statusIndex: 0,
+        address: address,
+        trackingNumber: 'TRK' + Math.random().toString(36).substr(2, 9).toUpperCase(),
+        timeline: [
+          { status: 'Order Confirmed', date: new Date().toISOString(), description: 'Your order has been confirmed' }
+        ]
+      };
+      
+      // Save order
+      const orders = JSON.parse(localStorage.getItem('orders')) || [];
+      orders.unshift(order);
+      localStorage.setItem('orders', JSON.stringify(orders));
+      
+      // Clear cart
+      localStorage.removeItem('cart');
+      localStorage.removeItem('checkoutData');
+      localStorage.removeItem('currentAddress');
+      
+      // Show success and redirect
+      showToast('Payment successful! Order placed.', 'success');
+      
+      setTimeout(() => {
+        window.location.href = `orders.html?success=true&order=${orderId}`;
+      }, 1500);
+    }
+    
+    // Handle search
+    function handleSearch(e) {
+      e.preventDefault();
+      const searchInput = e.target.querySelector('input');
+      const query = searchInput ? searchInput.value.trim() : '';
+      if (query) {
+        window.location.href = `shop.html?search=${encodeURIComponent(query)}`;
+      }
+    }
+    
+    // Toggle mobile navigation
+    function toggleMobileNav() {
+      const nav = document.getElementById('mobileNav');
+      const overlay = document.getElementById('mobileNavOverlay');
+      nav.classList.toggle('open');
+      overlay.classList.toggle('active');
+      document.body.style.overflow = nav.classList.contains('open') ? 'hidden' : '';
+    }
+  </script>
+</body>
+</html>

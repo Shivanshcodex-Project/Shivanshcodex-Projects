@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shop All Products - ShopEase</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="header-top">
+      <button class="menu-toggle" onclick="toggleMobileNav()" aria-label="Open menu">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+      </button>
+      
+      <a href="index.html" class="logo">
+        <span class="logo-text">ShopEase</span>
+        <span class="logo-tagline">Explore <span>Plus</span></span>
+      </a>
+      
+      <div class="search-bar">
+        <form class="search-input-wrapper" onsubmit="handleSearch(event)">
+          <input type="text" class="search-input" placeholder="Search for products, brands and more..." id="searchInput">
+          <button type="submit" class="search-btn" aria-label="Search">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"></circle>
+              <path d="m21 21-4.35-4.35"></path>
+            </svg>
+          </button>
+        </form>
+      </div>
+      
+      <div class="header-actions">
+        <a href="cart.html" class="header-btn" aria-label="Cart">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <path d="M16 10a4 4 0 0 1-8 0"></path>
+          </svg>
+          <span class="cart-count" id="cartCount" style="display: none;">0</span>
+        </a>
+      </div>
+    </div>
+    
+    <!-- Mobile Search -->
+    <div class="mobile-search">
+      <form class="search-input-wrapper" onsubmit="handleSearch(event)">
+        <input type="text" class="search-input" placeholder="Search for products, brands and more..." id="mobileSearchInput">
+        <button type="submit" class="search-btn" aria-label="Search">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8"></circle>
+            <path d="m21 21-4.35-4.35"></path>
+          </svg>
+        </button>
+      </form>
+    </div>
+    
+    <nav class="header-bottom">
+      <div class="nav-categories">
+        <a href="shop.html?category=all" class="nav-chip" data-category="all">All</a>
+        <a href="shop.html?category=Mobiles" class="nav-chip" data-category="Mobiles">Mobiles</a>
+        <a href="shop.html?category=Laptops" class="nav-chip" data-category="Laptops">Laptops</a>
+        <a href="shop.html?category=Audio" class="nav-chip" data-category="Audio">Audio</a>
+        <a href="shop.html?category=TV" class="nav-chip" data-category="TV">TV</a>
+        <a href="shop.html?category=Fashion" class="nav-chip" data-category="Fashion">Fashion</a>
+        <a href="shop.html?category=Cameras" class="nav-chip" data-category="Cameras">Cameras</a>
+        <a href="shop.html?category=Wearables" class="nav-chip" data-category="Wearables">Wearables</a>
+        <a href="shop.html?category=Gaming" class="nav-chip" data-category="Gaming">Gaming</a>
+        <a href="shop.html?category=Home" class="nav-chip" data-category="Home">Home</a>
+      </div>
+    </nav>
+  </header>
+  
+  <!-- Mobile Navigation -->
+  <div class="mobile-nav-overlay" id="mobileNavOverlay" onclick="toggleMobileNav()"></div>
+  <nav class="mobile-nav" id="mobileNav">
+    <div class="mobile-nav-header">
+      <span class="logo-text" style="color: white;">ShopEase</span>
+      <button class="mobile-nav-close" onclick="toggleMobileNav()" aria-label="Close menu">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+    <div class="mobile-nav-links">
+      <a href="index.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+          <polyline points="9 22 9 12 15 12 15 22"></polyline>
+        </svg>
+        Home
+      </a>
+      <a href="shop.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <path d="M16 10a4 4 0 0 1-8 0"></path>
+        </svg>
+        Shop
+      </a>
+      <a href="cart.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <path d="M16 10a4 4 0 0 1-8 0"></path>
+        </svg>
+        Cart
+      </a>
+      <a href="orders.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+          <polyline points="14 2 14 8 20 8"></polyline>
+          <line x1="16" y1="13" x2="8" y2="13"></line>
+          <line x1="16" y1="17" x2="8" y2="17"></line>
+          <polyline points="10 9 9 9 8 9"></polyline>
+        </svg>
+        My Orders
+      </a>
+      <a href="support.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+          <line x1="12" y1="17" x2="12.01" y2="17"></line>
+        </svg>
+        Help & Support
+      </a>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="page-transition shop-layout">
+    <!-- Filter Sidebar -->
+    <aside class="filter-sidebar" id="filterSidebar">
+      <div class="filter-section">
+        <h4 class="filter-title">Price Range</h4>
+        <div class="price-range">
+          <input type="number" id="minPrice" placeholder="Min" min="0">
+          <span>to</span>
+          <input type="number" id="maxPrice" placeholder="Max" min="0">
+        </div>
+      </div>
+      
+      <div class="filter-section">
+        <h4 class="filter-title">Categories</h4>
+        <div class="filter-list" id="categoryFilters">
+          <!-- Categories will be loaded by JS -->
+        </div>
+      </div>
+      
+      <div class="filter-section">
+        <h4 class="filter-title">Brands</h4>
+        <input type="text" class="filter-search" placeholder="Search brands..." id="brandSearch">
+        <div class="filter-list" id="brandFilters">
+          <!-- Brands will be loaded by JS -->
+        </div>
+      </div>
+      
+      <div class="filter-section">
+        <h4 class="filter-title">Rating</h4>
+        <div class="filter-list">
+          <label class="filter-item">
+            <input type="checkbox" value="4" class="rating-filter">
+            <span>4★ & above</span>
+          </label>
+          <label class="filter-item">
+            <input type="checkbox" value="3" class="rating-filter">
+            <span>3★ & above</span>
+          </label>
+          <label class="filter-item">
+            <input type="checkbox" value="2" class="rating-filter">
+            <span>2★ & above</span>
+          </label>
+        </div>
+      </div>
+      
+      <button class="btn btn-primary" onclick="applyFilters()" style="width: 100%;">Apply Filters</button>
+    </aside>
+    
+    <!-- Filter Overlay for Mobile -->
+    <div class="filter-overlay" id="filterOverlay" onclick="toggleFilters()"></div>
+    
+    <!-- Products Section -->
+    <div class="shop-content">
+      <div class="shop-header">
+        <span class="results-count" id="resultsCount">Showing all products</span>
+        <button class="mobile-filter-btn" onclick="toggleFilters()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="4" y1="21" x2="4" y2="14"></line>
+            <line x1="4" y1="10" x2="4" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="12"></line>
+            <line x1="12" y1="8" x2="12" y2="3"></line>
+            <line x1="20" y1="21" x2="20" y2="16"></line>
+            <line x1="20" y1="12" x2="20" y2="3"></line>
+            <line x1="1" y1="14" x2="7" y2="14"></line>
+            <line x1="9" y1="8" x2="15" y2="8"></line>
+            <line x1="17" y1="16" x2="23" y2="16"></line>
+          </svg>
+          Filters
+        </button>
+        <div class="sort-dropdown">
+          <label>Sort by:</label>
+          <select id="sortSelect" onchange="sortProducts()">
+            <option value="featured">Featured</option>
+            <option value="price-low">Price: Low to High</option>
+            <option value="price-high">Price: High to Low</option>
+            <option value="rating">Rating: High to Low</option>
+            <option value="discount">Discount: High to Low</option>
+            <option value="newest">Newest First</option>
+          </select>
+        </div>
+      </div>
+      
+      <div class="product-grid" id="productsGrid">
+        <!-- Products will be loaded by JS -->
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-top">
+      <div class="footer-grid">
+        <div class="footer-column">
+          <h4>About</h4>
+          <ul>
+            <li><a href="support.html">Contact Us</a></li>
+            <li><a href="#">About Us</a></li>
+            <li><a href="#">Careers</a></li>
+            <li><a href="#">Press</a></li>
+          </ul>
+        </div>
+        <div class="footer-column">
+          <h4>Help</h4>
+          <ul>
+            <li><a href="support.html">Payments</a></li>
+            <li><a href="support.html">Shipping</a></li>
+            <li><a href="support.html">Returns</a></li>
+            <li><a href="support.html">FAQ</a></li>
+          </ul>
+        </div>
+        <div class="footer-column">
+          <h4>Policy</h4>
+          <ul>
+            <li><a href="#">Return Policy</a></li>
+            <li><a href="#">Terms of Use</a></li>
+            <li><a href="#">Security</a></li>
+            <li><a href="#">Privacy</a></li>
+          </ul>
+        </div>
+        <div class="footer-column">
+          <h4>Social</h4>
+          <ul>
+            <li><a href="#">Facebook</a></li>
+            <li><a href="#">Twitter</a></li>
+            <li><a href="#">YouTube</a></li>
+            <li><a href="#">Instagram</a></li>
+          </ul>
+        </div>
+        <div class="footer-column">
+          <h4>Mail Us</h4>
+          <p>ShopEase Internet Private Limited,<br>Buildings Alyssa, Begonia &<br>Clove Embassy Tech Village,<br>Bengaluru, 560103</p>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2024 ShopEase. All Rights Reserved.</p>
+    </div>
+  </footer>
+
+  <!-- Toast Container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- Scripts -->
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    let currentProducts = [...products];
+    let filteredProducts = [...products];
+    
+    // Initialize shop page
+    document.addEventListener('DOMContentLoaded', function() {
+      updateCartCount();
+      loadFilters();
+      parseUrlParams();
+      renderProducts();
+    });
+    
+    // Parse URL parameters
+    function parseUrlParams() {
+      const params = new URLSearchParams(window.location.search);
+      const category = params.get('category');
+      const search = params.get('search');
+      const sort = params.get('sort');
+      
+      if (category && category !== 'all') {
+        currentProducts = products.filter(p => p.category === category);
+        document.querySelectorAll('.nav-chip').forEach(chip => {
+          if (chip.dataset.category === category) {
+            chip.classList.add('active');
+          } else {
+            chip.classList.remove('active');
+          }
+        });
+      }
+      
+      if (search) {
+        currentProducts = searchProducts(search);
+        document.getElementById('searchInput').value = search;
+      }
+      
+      if (sort) {
+        document.getElementById('sortSelect').value = sort;
+        sortProductsList(sort);
+      }
+      
+      filteredProducts = [...currentProducts];
+    }
+    
+    // Load filter options
+    function loadFilters() {
+      // Load categories
+      const categories = [...new Set(products.map(p => p.category))];
+      document.getElementById('categoryFilters').innerHTML = categories.map(cat => `
+        <label class="filter-item">
+          <input type="checkbox" value="${cat}" class="category-filter">
+          <span>${cat}</span>
+        </label>
+      `).join('');
+      
+      // Load brands
+      const brands = [...new Set(products.map(p => p.brand))].sort();
+      document.getElementById('brandFilters').innerHTML = brands.map(brand => `
+        <label class="filter-item">
+          <input type="checkbox" value="${brand}" class="brand-filter">
+          <span>${brand}</span>
+        </label>
+      `).join('');
+      
+      // Brand search
+      document.getElementById('brandSearch').addEventListener('input', function() {
+        const query = this.value.toLowerCase();
+        document.querySelectorAll('#brandFilters .filter-item').forEach(item => {
+          const brand = item.querySelector('span').textContent.toLowerCase();
+          item.style.display = brand.includes(query) ? 'flex' : 'none';
+        });
+      });
+    }
+    
+    // Render products
+    function renderProducts() {
+      const grid = document.getElementById('productsGrid');
+      const countEl = document.getElementById('resultsCount');
+      
+      if (filteredProducts.length === 0) {
+        grid.innerHTML = `
+          <div style="grid-column: 1/-1; text-align: center; padding: 60px 20px;">
+            <div style="font-size: 4rem; margin-bottom: 20px;">🔍</div>
+            <h3 style="font-size: 1.3rem; margin-bottom: 10px;">No products found</h3>
+            <p style="color: var(--gray-500);">Try adjusting your filters or search query</p>
+          </div>
+        `;
+        countEl.textContent = '0 products found';
+        return;
+      }
+      
+      countEl.textContent = `Showing ${filteredProducts.length} product${filteredProducts.length !== 1 ? 's' : ''}`;
+      
+      grid.innerHTML = filteredProducts.map(product => `
+        <div class="product-card" onclick="goToProduct(${product.id})">
+          <div class="product-image-wrapper">
+            <img src="${product.images[0]}" alt="${product.title}" class="product-image" loading="lazy">
+            <span class="discount-badge">${product.discountPercent}% OFF</span>
+            <button class="wishlist-btn" onclick="event.stopPropagation(); addToWishlist(${product.id})">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+              </svg>
+            </button>
+          </div>
+          <div class="product-info">
+            <h3 class="product-title">${product.title}</h3>
+            <div class="product-rating">
+              <span class="rating-badge">
+                ${product.rating}
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                </svg>
+              </span>
+              <span class="rating-count">(${product.ratingCount.toLocaleString()})</span>
+            </div>
+            <div class="assured-badge">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2L3 7v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-9-5z"/>
+              </svg>
+              Assured
+            </div>
+            <div class="product-price-row">
+              <span class="product-price">${formatPrice(product.price)}</span>
+              <span class="product-mrp">${formatPrice(product.mrp)}</span>
+              <span class="product-discount">${product.discountPercent}% off</span>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+    
+    // Sort products
+    function sortProducts() {
+      const sortValue = document.getElementById('sortSelect').value;
+      sortProductsList(sortValue);
+      renderProducts();
+    }
+    
+    function sortProductsList(sortValue) {
+      switch(sortValue) {
+        case 'price-low':
+          filteredProducts.sort((a, b) => a.price - b.price);
+          break;
+        case 'price-high':
+          filteredProducts.sort((a, b) => b.price - a.price);
+          break;
+        case 'rating':
+          filteredProducts.sort((a, b) => b.rating - a.rating);
+          break;
+        case 'discount':
+          filteredProducts.sort((a, b) => b.discountPercent - a.discountPercent);
+          break;
+        case 'newest':
+          filteredProducts.sort((a, b) => b.id - a.id);
+          break;
+        default:
+          // Featured - no specific sort
+          break;
+      }
+    }
+    
+    // Apply filters
+    function applyFilters() {
+      const minPrice = parseFloat(document.getElementById('minPrice').value) || 0;
+      const maxPrice = parseFloat(document.getElementById('maxPrice').value) || Infinity;
+      
+      const selectedCategories = Array.from(document.querySelectorAll('.category-filter:checked')).map(cb => cb.value);
+      const selectedBrands = Array.from(document.querySelectorAll('.brand-filter:checked')).map(cb => cb.value);
+      const selectedRatings = Array.from(document.querySelectorAll('.rating-filter:checked')).map(cb => parseFloat(cb.value));
+      
+      filteredProducts = currentProducts.filter(product => {
+        const priceMatch = product.price >= minPrice && product.price <= maxPrice;
+        const categoryMatch = selectedCategories.length === 0 || selectedCategories.includes(product.category);
+        const brandMatch = selectedBrands.length === 0 || selectedBrands.includes(product.brand);
+        const ratingMatch = selectedRatings.length === 0 || selectedRatings.some(r => product.rating >= r);
+        
+        return priceMatch && categoryMatch && brandMatch && ratingMatch;
+      });
+      
+      sortProductsList(document.getElementById('sortSelect').value);
+      renderProducts();
+      
+      // Close mobile filters
+      if (window.innerWidth <= 768) {
+        toggleFilters();
+      }
+    }
+    
+    // Toggle mobile filters
+    function toggleFilters() {
+      document.getElementById('filterSidebar').classList.toggle('open');
+      document.getElementById('filterOverlay').classList.toggle('open');
+    }
+    
+    // Navigate to product page
+    function goToProduct(id) {
+      window.location.href = `product.html?id=${id}`;
+    }
+    
+    // Handle search
+    function handleSearch(e) {
+      e.preventDefault();
+      const searchInput = e.target.querySelector('input');
+      const query = searchInput ? searchInput.value.trim() : '';
+      if (query) {
+        window.location.href = `shop.html?search=${encodeURIComponent(query)}`;
+      }
+    }
+    
+    // Toggle mobile navigation
+    function toggleMobileNav() {
+      const nav = document.getElementById('mobileNav');
+      const overlay = document.getElementById('mobileNavOverlay');
+      nav.classList.toggle('open');
+      overlay.classList.toggle('active');
+      document.body.style.overflow = nav.classList.contains('open') ? 'hidden' : '';
+    }
+    
+    // Add to wishlist
+    function addToWishlist(id) {
+      showToast('Added to wishlist!', 'success');
+    }
+  </script>
+</body>
+</html>
